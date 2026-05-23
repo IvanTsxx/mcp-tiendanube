@@ -77,10 +77,10 @@ export type VariantInput = z.infer<typeof VariantInputSchema>;
 // Product create input (for atomic creation)
 export const ProductCreateSchema = z.object({
   name: z
-    .union([z.string(), z.record(z.string())])
+    .union([z.string(), z.record(z.string(), z.string())])
     .describe("Product name (string or translated object)"),
   description: z
-    .union([z.string(), z.record(z.string())])
+    .union([z.string(), z.record(z.string(), z.string())])
     .optional()
     .describe("Product description"),
   price: z
@@ -96,14 +96,14 @@ export const ProductCreateSchema = z.object({
     .describe("Stock for products without variation"),
   sku: z.string().optional().describe("SKU for products without variation"),
   attributes: z
-    .array(z.union([z.string(), z.record(z.string())]))
+    .array(z.union([z.string(), z.record(z.string(), z.string())]))
     .optional()
     .describe("Variation attributes (e.g. ['Size'])"),
   variants: z
     .array(
       z.object({
         values: z
-          .array(z.union([z.string(), z.record(z.string())]))
+          .array(z.union([z.string(), z.record(z.string(), z.string())]))
           .describe("Attribute values (e.g. ['S'])"),
         price: z
           .string()
