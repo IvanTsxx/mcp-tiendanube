@@ -2,6 +2,7 @@ import type { ToolMetadata, InferSchema } from "xmcp";
 import { z } from "zod";
 
 import { ProductIdSchema } from "../domain/models/product";
+import { createProductServiceInstance } from "../services/factory";
 
 export const schema = {
   confirm: z
@@ -27,22 +28,8 @@ export const metadata: ToolMetadata = {
 type Schema = typeof schema;
 type Params = InferSchema<Schema>;
 
-interface ProductServiceInterface {
-  delete(id: string, confirm: true): Promise<void>;
-}
-
-let productService: ProductServiceInterface | null = null;
-
-export function setProductService(service: ProductServiceInterface): void {
-  productService = service;
-}
-
 export default async function deleteProduct(params: Params) {
-  if (!productService) {
-    throw new Error(
-      "ProductService not configured. Call setProductService() first."
-    );
-  }
+  const productService = createProductServiceInstance();
 
   const { product_id, confirm } = params;
 

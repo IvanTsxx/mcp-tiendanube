@@ -1,10 +1,9 @@
-import { test, expect, describe } from "bun:test";
+import { test, expect, describe, mock, beforeAll, beforeEach } from "bun:test";
 
-import manageVariants, {
-  metadata,
-  schema,
-  setVariantService,
-} from "../../tools/manage-variants";
+let manageVariants: any;
+let metadata: any;
+let schema: any;
+let mockService: any;
 
 function createMockVariantService(
   overrides: {
@@ -57,7 +56,25 @@ function createMockVariantService(
   };
 }
 
+beforeAll(async () => {
+  mock.module("../../services/factory", () => ({
+    createImageServiceInstance: () => mockService,
+    createProductServiceInstance: () => mockService,
+    createStockServiceInstance: () => mockService,
+    createVariantServiceInstance: () => mockService,
+  }));
+
+  const mod = await import("../../tools/manage-variants");
+  manageVariants = mod.default;
+  metadata = mod.metadata;
+  schema = mod.schema;
+});
+
 describe("manage-variants tool", () => {
+  beforeEach(() => {
+    mockService = createMockVariantService();
+  });
+
   test("schema has correct structure", () => {
     expect(schema.action).toBeDefined();
     expect(schema.product_id).toBeDefined();
@@ -70,7 +87,7 @@ describe("manage-variants tool", () => {
   });
 
   test("tool creates variant when action is create", async () => {
-    const mockService = createMockVariantService({
+    mockService = createMockVariantService({
       createResponse: {
         id: "new-123",
         sku: "SKU-NEW",
@@ -78,8 +95,6 @@ describe("manage-variants tool", () => {
         stock: 10,
       },
     });
-
-    setVariantService(mockService as never);
 
     const result = await manageVariants({
       action: "create",
@@ -93,7 +108,7 @@ describe("manage-variants tool", () => {
   });
 
   test("tool updates variant when action is update", async () => {
-    const mockService = createMockVariantService({
+    mockService = createMockVariantService({
       updateResponse: {
         id: "var-123",
         sku: "SKU-UPD",
@@ -101,8 +116,6 @@ describe("manage-variants tool", () => {
         stock: 20,
       },
     });
-
-    setVariantService(mockService as never);
 
     const result = await manageVariants({
       action: "update",
@@ -116,10 +129,6 @@ describe("manage-variants tool", () => {
   });
 
   test("tool deletes variant when action is delete", async () => {
-    const mockService = createMockVariantService();
-
-    setVariantService(mockService as never);
-
     const result = await manageVariants({
       action: "delete",
       product_id: "prod-123",
@@ -130,23 +139,7 @@ describe("manage-variants tool", () => {
     expect(result.action).toBe("deleted");
   });
 
-  test("tool throws error when service not configured", async () => {
-    setVariantService(null as never);
-
-    await expect(
-      manageVariants({
-        action: "create",
-        product_id: "prod-123",
-        variant: { sku: "TEST" },
-      } as never)
-    ).rejects.toThrow("VariantService not configured");
-  });
-
   test("tool requires variant_id for update action", async () => {
-    const mockService = createMockVariantService();
-
-    setVariantService(mockService as never);
-
     await expect(
       manageVariants({
         action: "update",

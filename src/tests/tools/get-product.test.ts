@@ -1,10 +1,9 @@
-import { test, expect, describe } from "bun:test";
+import { test, expect, describe, mock, beforeAll, beforeEach } from "bun:test";
 
-import getProduct, {
-  metadata,
-  schema,
-  setProductService,
-} from "../../tools/get-product";
+let getProduct: any;
+let metadata: any;
+let schema: any;
+let mockService: any;
 
 function createMockProductService(overrides: {
   getResponse?: {
@@ -40,7 +39,25 @@ function createMockProductService(overrides: {
   };
 }
 
+beforeAll(async () => {
+  mock.module("../../services/factory", () => ({
+    createImageServiceInstance: () => mockService,
+    createProductServiceInstance: () => mockService,
+    createStockServiceInstance: () => mockService,
+    createVariantServiceInstance: () => mockService,
+  }));
+
+  const mod = await import("../../tools/get-product");
+  getProduct = mod.default;
+  metadata = mod.metadata;
+  schema = mod.schema;
+});
+
 describe("get-product tool", () => {
+  beforeEach(() => {
+    mockService = createMockProductService({});
+  });
+
   test("schema has correct id field", () => {
     expect(schema.id).toBeDefined();
   });
@@ -50,8 +67,8 @@ describe("get-product tool", () => {
     expect(metadata.annotations?.readOnlyHint).toBe(true);
   });
 
-  test("tool returns product when service configured", async () => {
-    const mockService = createMockProductService({
+  test("tool returns product", async () => {
+    mockService = createMockProductService({
       getResponse: {
         id: "123",
         name: "Test Product",
@@ -66,28 +83,16 @@ describe("get-product tool", () => {
       },
     });
 
-    setProductService(mockService as never);
-
     const result = await getProduct({ id: "123" } as never);
 
     expect(result.product).toBeDefined();
     expect(result.product.name).toBe("Test Product");
   });
 
-  test("tool throws error when service not configured", async () => {
-    setProductService(null as never);
-
-    await expect(getProduct({ id: "123" } as never)).rejects.toThrow(
-      "ProductService not configured"
-    );
-  });
-
   test("tool propagates service errors", async () => {
-    const mockService = createMockProductService({
+    mockService = createMockProductService({
       getError: new Error("Not found"),
     });
-
-    setProductService(mockService as never);
 
     await expect(getProduct({ id: "999" } as never)).rejects.toThrow(
       "Not found"

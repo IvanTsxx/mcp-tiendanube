@@ -1,6 +1,8 @@
 import type { ToolMetadata, InferSchema } from "xmcp";
 import { z } from "zod";
 
+import { createProductServiceInstance } from "../services/factory";
+
 export const schema = {
   page: z.coerce.number().int().min(1).default(1).describe("Page number"),
   search: z.string().optional().describe("Search by product name"),
@@ -25,51 +27,8 @@ export const metadata: ToolMetadata = {
 type Schema = typeof schema;
 type Params = InferSchema<Schema>;
 
-// Service interface for dependency injection
-interface ProductServiceInterface {
-  list(params?: {
-    page?: number;
-    per_page?: number;
-    search?: string;
-    stock_status?: "all" | "in_stock" | "out_of_stock";
-  }): Promise<{
-    products: {
-      id: string;
-      name: string;
-      description: string;
-      price: string;
-      stock: number;
-      variants_count: number;
-      variants: {
-        id: string;
-        sku: string;
-        price: string;
-        stock: number;
-      }[];
-      images: { id: string; src: string; position: number }[];
-    }[];
-    pagination: {
-      total: number;
-      page: number;
-      per_page: number;
-      total_pages: number;
-    };
-  }>;
-}
-
-// Factory function to set service (allows testing with mock)
-let productService: ProductServiceInterface | null = null;
-
-export function setProductService(service: ProductServiceInterface): void {
-  productService = service;
-}
-
 export default async function listProducts(params: Params) {
-  if (!productService) {
-    throw new Error(
-      "ProductService not configured. Call setProductService() first."
-    );
-  }
+  const productService = createProductServiceInstance();
 
   const { stock_status, search, page } = params;
 

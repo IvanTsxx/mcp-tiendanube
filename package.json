@@ -4,14 +4,15 @@
   "description": "An xmcp application with tool syntax",
   "scripts": {
     "build": "xmcp build",
-    "dev": "xmcp dev",
-    "start": "node dist/http.js",
+    "dev": "rm -rf dist && rm -rf .xmcp && xmcp dev",
+    "start": "node dist/[transport].js",
     "check": "ultracite check",
     "fix": "ultracite fix",
     "test": "bun test",
     "prepare": "lefthook install"
   },
   "dependencies": {
+    "dotenv": "^17.4.2",
     "xmcp": "0.6.10",
     "zod": "^4.0.0"
   },

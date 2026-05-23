@@ -1,10 +1,9 @@
-import { test, expect, describe } from "bun:test";
+import { test, expect, describe, mock, beforeAll, beforeEach } from "bun:test";
 
-import manageImages, {
-  metadata,
-  schema,
-  setImageService,
-} from "../../tools/manage-images";
+let manageImages: any;
+let metadata: any;
+let schema: any;
+let mockService: any;
 
 function createMockImageService(
   overrides: {
@@ -45,7 +44,25 @@ function createMockImageService(
   };
 }
 
+beforeAll(async () => {
+  mock.module("../../services/factory", () => ({
+    createImageServiceInstance: () => mockService,
+    createProductServiceInstance: () => mockService,
+    createStockServiceInstance: () => mockService,
+    createVariantServiceInstance: () => mockService,
+  }));
+
+  const mod = await import("../../tools/manage-images");
+  manageImages = mod.default;
+  metadata = mod.metadata;
+  schema = mod.schema;
+});
+
 describe("manage-images tool", () => {
+  beforeEach(() => {
+    mockService = createMockImageService();
+  });
+
   test("schema has correct structure", () => {
     expect(schema.action).toBeDefined();
     expect(schema.product_id).toBeDefined();
@@ -57,15 +74,13 @@ describe("manage-images tool", () => {
   });
 
   test("tool adds image when action is add", async () => {
-    const mockService = createMockImageService({
+    mockService = createMockImageService({
       addResponse: {
         id: "img-123",
         src: "https://example.com/new.jpg",
         position: 1,
       },
     });
-
-    setImageService(mockService as never);
 
     const result = await manageImages({
       action: "add",
@@ -79,10 +94,6 @@ describe("manage-images tool", () => {
   });
 
   test("tool removes image when action is remove", async () => {
-    const mockService = createMockImageService();
-
-    setImageService(mockService as never);
-
     const result = await manageImages({
       action: "remove",
       product_id: "prod-123",
@@ -94,15 +105,13 @@ describe("manage-images tool", () => {
   });
 
   test("tool reorders image when action is reorder", async () => {
-    const mockService = createMockImageService({
+    mockService = createMockImageService({
       reorderResponse: {
         id: "img-123",
         src: "https://example.com/test.jpg",
         position: 2,
       },
     });
-
-    setImageService(mockService as never);
 
     const result = await manageImages({
       action: "reorder",
@@ -115,23 +124,7 @@ describe("manage-images tool", () => {
     expect(result.action).toBe("reordered");
   });
 
-  test("tool throws error when service not configured", async () => {
-    setImageService(null as never);
-
-    await expect(
-      manageImages({
-        action: "add",
-        product_id: "prod-123",
-        image_url: "https://example.com/test.jpg",
-      } as never)
-    ).rejects.toThrow("ImageService not configured");
-  });
-
   test("tool requires image_url for add action", async () => {
-    const mockService = createMockImageService();
-
-    setImageService(mockService as never);
-
     await expect(
       manageImages({
         action: "add",

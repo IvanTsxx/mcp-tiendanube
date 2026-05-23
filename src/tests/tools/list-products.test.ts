@@ -1,12 +1,10 @@
-import { test, expect, describe, beforeEach } from "bun:test";
+import { test, expect, describe, mock, beforeAll, beforeEach } from "bun:test";
 
-import listProducts, {
-  schema,
-  metadata,
-  setProductService,
-} from "../../tools/list-products";
+let listProducts: any;
+let schema: any;
+let metadata: any;
+let mockService: any;
 
-// Mock product service for testing
 function createMockProductService(
   overrides: {
     listResponse?: {
@@ -50,9 +48,23 @@ function createMockProductService(
   };
 }
 
+beforeAll(async () => {
+  mock.module("../../services/factory", () => ({
+    createImageServiceInstance: () => mockService,
+    createProductServiceInstance: () => mockService,
+    createStockServiceInstance: () => mockService,
+    createVariantServiceInstance: () => mockService,
+  }));
+
+  const mod = await import("../../tools/list-products");
+  listProducts = mod.default;
+  schema = mod.schema;
+  metadata = mod.metadata;
+});
+
 describe("list-products tool", () => {
   beforeEach(() => {
-    // Reset service before each test
+    mockService = createMockProductService();
   });
 
   test("schema has correct structure", () => {
@@ -68,8 +80,8 @@ describe("list-products tool", () => {
     expect(metadata.annotations?.destructiveHint).toBe(false);
   });
 
-  test("tool returns paginated products when service configured", async () => {
-    const mockService = createMockProductService({
+  test("tool returns paginated products", async () => {
+    mockService = createMockProductService({
       listResponse: {
         pagination: {
           page: 1,
@@ -94,8 +106,6 @@ describe("list-products tool", () => {
       },
     });
 
-    setProductService(mockService as any);
-
     const result = await listProducts({
       page: 1,
       search: undefined,
@@ -108,14 +118,12 @@ describe("list-products tool", () => {
   });
 
   test("tool accepts optional search parameter", async () => {
-    const mockService = createMockProductService({
+    mockService = createMockProductService({
       listResponse: {
         pagination: { page: 1, per_page: 50, total: 0, total_pages: 0 },
         products: [],
       },
     });
-
-    setProductService(mockService as any);
 
     const result = await listProducts({
       page: 1,
@@ -124,15 +132,6 @@ describe("list-products tool", () => {
     });
 
     expect(result.products).toEqual([]);
-  });
-
-  test("tool throws error when service not configured", async () => {
-    // Reset service to null
-    setProductService(null as any);
-
-    await expect(
-      listProducts({ page: 1, search: undefined, stock_status: "all" })
-    ).rejects.toThrow("ProductService not configured");
   });
 
   test("schema stock_status enum has correct values", () => {

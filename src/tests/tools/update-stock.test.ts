@@ -1,10 +1,9 @@
-import { test, expect, describe } from "bun:test";
+import { test, expect, describe, mock, beforeAll, beforeEach } from "bun:test";
 
-import updateStock, {
-  metadata,
-  schema,
-  setStockService,
-} from "../../tools/update-stock";
+let updateStock: any;
+let metadata: any;
+let schema: any;
+let mockService: any;
 
 function createMockStockService(
   overrides: {
@@ -34,7 +33,25 @@ function createMockStockService(
   };
 }
 
+beforeAll(async () => {
+  mock.module("../../services/factory", () => ({
+    createImageServiceInstance: () => mockService,
+    createProductServiceInstance: () => mockService,
+    createStockServiceInstance: () => mockService,
+    createVariantServiceInstance: () => mockService,
+  }));
+
+  const mod = await import("../../tools/update-stock");
+  updateStock = mod.default;
+  metadata = mod.metadata;
+  schema = mod.schema;
+});
+
 describe("update-stock tool", () => {
+  beforeEach(() => {
+    mockService = createMockStockService();
+  });
+
   test("schema has correct structure", () => {
     expect(schema.variant_stock).toBeDefined();
   });
@@ -43,15 +60,13 @@ describe("update-stock tool", () => {
     expect(metadata.name).toBe("update-stock");
   });
 
-  test("tool returns results with summary when service configured", async () => {
-    const mockService = createMockStockService({
+  test("tool returns results with summary", async () => {
+    mockService = createMockStockService({
       updateStockResponse: [
         { variant_id: "var-1", success: true, stock: 100 },
         { variant_id: "var-2", success: true, stock: 50 },
       ],
     });
-
-    setStockService(mockService as never);
 
     const result = await updateStock({
       variant_stock: [
@@ -66,14 +81,12 @@ describe("update-stock tool", () => {
   });
 
   test("tool handles partial failures", async () => {
-    const mockService = createMockStockService({
+    mockService = createMockStockService({
       updateStockResponse: [
         { variant_id: "var-1", success: true, stock: 100 },
         { variant_id: "var-2", success: false, error: "Variant not found" },
       ],
     });
-
-    setStockService(mockService as never);
 
     const result = await updateStock({
       variant_stock: [
@@ -84,16 +97,6 @@ describe("update-stock tool", () => {
 
     expect(result.summary.success).toBe(1);
     expect(result.summary.failed).toBe(1);
-  });
-
-  test("tool throws error when service not configured", async () => {
-    setStockService(null as never);
-
-    await expect(
-      updateStock({
-        variant_stock: [{ variant_id: "var-1", stock: 100 }],
-      })
-    ).rejects.toThrow("StockService not configured");
   });
 
   test("schema requires at least one stock update", () => {

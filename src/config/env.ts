@@ -1,4 +1,22 @@
+import { resolve } from "node:path";
+
+import dotenv from "dotenv";
 import { z } from "zod";
+
+// Try loading .env from multiple common locations
+const envPaths = [
+  resolve(process.cwd(), ".env"),
+  resolve(process.cwd(), "..", ".env"),
+  resolve(process.cwd(), "..", "..", ".env"),
+];
+
+for (const path of envPaths) {
+  const result = dotenv.config({ path });
+  if (!result.error) {
+    console.log(`[env] Loaded .env from: ${path}`);
+    break;
+  }
+}
 
 export const TokenConfigSchema = z.object({
   TIENDANUBE_ACCESS_TOKEN: z
@@ -20,11 +38,21 @@ export function loadConfig(): TokenConfig {
     return configInstance;
   }
 
-  const result = TokenConfigSchema.safeParse({
+  const rawEnv = {
     TIENDANUBE_ACCESS_TOKEN: process.env.TIENDANUBE_ACCESS_TOKEN,
     TIENDANUBE_API_BASE_URL: process.env.TIENDANUBE_API_BASE_URL,
     TIENDANUBE_STORE_ID: process.env.TIENDANUBE_STORE_ID,
+  };
+
+  console.log("[env] Raw env vars:", {
+    TIENDANUBE_ACCESS_TOKEN: rawEnv.TIENDANUBE_ACCESS_TOKEN
+      ? `${rawEnv.TIENDANUBE_ACCESS_TOKEN.slice(0, 8)}... (${rawEnv.TIENDANUBE_ACCESS_TOKEN.length} chars)`
+      : "MISSING",
+    TIENDANUBE_API_BASE_URL: rawEnv.TIENDANUBE_API_BASE_URL ?? "MISSING",
+    TIENDANUBE_STORE_ID: rawEnv.TIENDANUBE_STORE_ID ?? "MISSING",
   });
+
+  const result = TokenConfigSchema.safeParse(rawEnv);
 
   if (!result.success) {
     const errors = result.error.issues

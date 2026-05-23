@@ -60,16 +60,12 @@ async function sleep(ms: number): Promise<void> {
 export function createAdapter(
   options: TiendaNubeAdapterOptions
 ): TiendaNubeAdapter {
-  const {
-    config,
-    userAgent = "mcp-tiendanube (https://github.com/tiendanube)",
-  } = options;
+  const { config } = options;
 
   const headers = {
     Accept: "application/json",
-    Authorization: `Bearer ${config.TIENDANUBE_ACCESS_TOKEN}`,
+    Authentication: `bearer ${config.TIENDANUBE_ACCESS_TOKEN}`,
     "Content-Type": "application/json",
-    "User-Agent": userAgent,
   };
 
   async function requestWithRetry<T>(
@@ -79,6 +75,11 @@ export function createAdapter(
     retryCount = 0
   ): Promise<T> {
     const url = `${config.TIENDANUBE_API_BASE_URL}/${config.TIENDANUBE_STORE_ID}${path}`;
+
+    console.log(`[tn-api] ${method} ${url}`);
+    console.log(
+      `[tn-api] Authentication header length: ${headers.Authentication.length}`
+    );
 
     const requestOptions: RequestInit = {
       headers,
@@ -123,6 +124,9 @@ export function createAdapter(
 
     // Handle other error statuses
     if (!response.ok) {
+      console.log(
+        `[tn-api] Error response: ${response.status} ${response.statusText}`
+      );
       let errorBody: unknown;
       try {
         errorBody = await response.json();

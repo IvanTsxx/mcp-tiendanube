@@ -2,6 +2,7 @@ import type { ToolMetadata, InferSchema } from "xmcp";
 import { z } from "zod";
 
 import { ProductIdSchema, ProductUpdateSchema } from "../domain/models/product";
+import { createProductServiceInstance } from "../services/factory";
 
 export const schema = {
   updates: z
@@ -30,34 +31,8 @@ export const metadata: ToolMetadata = {
 type Schema = typeof schema;
 type Params = InferSchema<Schema>;
 
-interface ProductServiceInterface {
-  updateBulk(
-    items: {
-      id: string;
-      updates: Record<string, unknown>;
-    }[]
-  ): Promise<
-    {
-      id: string;
-      success: boolean;
-      product?: unknown;
-      error?: string;
-    }[]
-  >;
-}
-
-let productService: ProductServiceInterface | null = null;
-
-export function setProductService(service: ProductServiceInterface): void {
-  productService = service;
-}
-
 export default async function updateProducts(params: Params) {
-  if (!productService) {
-    throw new Error(
-      "ProductService not configured. Call setProductService() first."
-    );
-  }
+  const productService = createProductServiceInstance();
 
   const results = await productService.updateBulk(params.updates);
 

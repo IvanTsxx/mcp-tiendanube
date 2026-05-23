@@ -1,6 +1,8 @@
 import type { ToolMetadata, InferSchema } from "xmcp";
 import { z } from "zod";
 
+import { createStockServiceInstance } from "../services/factory";
+
 export const schema = {
   variant_stock: z
     .array(
@@ -32,29 +34,8 @@ export const metadata: ToolMetadata = {
 type Schema = typeof schema;
 type Params = InferSchema<Schema>;
 
-interface StockServiceInterface {
-  updateStock(updates: { variant_id: string; stock: number }[]): Promise<
-    {
-      variant_id: string;
-      success: boolean;
-      stock?: number;
-      error?: string;
-    }[]
-  >;
-}
-
-let stockService: StockServiceInterface | null = null;
-
-export function setStockService(service: StockServiceInterface): void {
-  stockService = service;
-}
-
 export default async function updateStock(params: Params) {
-  if (!stockService) {
-    throw new Error(
-      "StockService not configured. Call setStockService() first."
-    );
-  }
+  const stockService = createStockServiceInstance();
 
   const results = await stockService.updateStock(params.variant_stock);
 

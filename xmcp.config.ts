@@ -9,6 +9,8 @@ const config: XmcpConfig = {
   },
   template: {
     icons: [{ src: "./xmcp.svg" }],
+    name: "TiendaNube MCP",
+    description: "MCP for TiendaNube API",
   },
 };
 

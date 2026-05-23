@@ -2,6 +2,7 @@ import type { ToolMetadata, InferSchema } from "xmcp";
 import { z } from "zod";
 
 import { ProductIdSchema } from "../domain/models/product";
+import { createImageServiceInstance } from "../services/factory";
 
 export const schema = {
   action: z
@@ -36,38 +37,8 @@ export const metadata: ToolMetadata = {
 type Schema = typeof schema;
 type Params = InferSchema<Schema>;
 
-interface ImageServiceInterface {
-  add(
-    productId: string,
-    imageUrl: string
-  ): Promise<{
-    id: string;
-    src: string;
-    position: number;
-  }>;
-  remove(imageId: string): Promise<void>;
-  reorder(
-    imageId: string,
-    position: number
-  ): Promise<{
-    id: string;
-    src: string;
-    position: number;
-  }>;
-}
-
-let imageService: ImageServiceInterface | null = null;
-
-export function setImageService(service: ImageServiceInterface): void {
-  imageService = service;
-}
-
 export default async function manageImages(params: Params) {
-  if (!imageService) {
-    throw new Error(
-      "ImageService not configured. Call setImageService() first."
-    );
-  }
+  const imageService = createImageServiceInstance();
 
   const { product_id, action, image_url, image_id, position } = params;
 

@@ -2,6 +2,7 @@ import type { ToolMetadata, InferSchema } from "xmcp";
 import { z } from "zod";
 
 import { ProductIdSchema, VariantInputSchema } from "../domain/models/product";
+import { createVariantServiceInstance } from "../services/factory";
 
 export const schema = {
   action: z
@@ -32,30 +33,8 @@ export const metadata: ToolMetadata = {
 type Schema = typeof schema;
 type Params = InferSchema<Schema>;
 
-interface VariantServiceInterface {
-  create(
-    productId: string,
-    variant: { sku?: string; price?: string; stock?: number }
-  ): Promise<{ id: string; sku: string; price: string; stock: number }>;
-  update(
-    variantId: string,
-    body: Partial<{ sku: string; price: string; stock: number }>
-  ): Promise<{ id: string; sku: string; price: string; stock: number }>;
-  delete(variantId: string): Promise<void>;
-}
-
-let variantService: VariantServiceInterface | null = null;
-
-export function setVariantService(service: VariantServiceInterface): void {
-  variantService = service;
-}
-
 export default async function manageVariants(params: Params) {
-  if (!variantService) {
-    throw new Error(
-      "VariantService not configured. Call setVariantService() first."
-    );
-  }
+  const variantService = createVariantServiceInstance();
 
   const { product_id, action, variant, variant_id } = params;
 

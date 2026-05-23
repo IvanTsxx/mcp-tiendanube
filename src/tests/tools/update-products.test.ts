@@ -1,10 +1,9 @@
-import { test, expect, describe } from "bun:test";
+import { test, expect, describe, mock, beforeAll, beforeEach } from "bun:test";
 
-import updateProducts, {
-  metadata,
-  schema,
-  setProductService,
-} from "../../tools/update-products";
+let updateProducts: any;
+let metadata: any;
+let schema: any;
+let mockService: any;
 
 function createMockProductService(overrides: {
   updateBulkResponse?: {
@@ -34,7 +33,25 @@ function createMockProductService(overrides: {
   };
 }
 
+beforeAll(async () => {
+  mock.module("../../services/factory", () => ({
+    createImageServiceInstance: () => mockService,
+    createProductServiceInstance: () => mockService,
+    createStockServiceInstance: () => mockService,
+    createVariantServiceInstance: () => mockService,
+  }));
+
+  const mod = await import("../../tools/update-products");
+  updateProducts = mod.default;
+  metadata = mod.metadata;
+  schema = mod.schema;
+});
+
 describe("update-products tool", () => {
+  beforeEach(() => {
+    mockService = createMockProductService({});
+  });
+
   test("schema has correct structure", () => {
     expect(schema.updates).toBeDefined();
   });
@@ -44,15 +61,13 @@ describe("update-products tool", () => {
     expect(metadata.annotations?.readOnlyHint).toBe(false);
   });
 
-  test("tool returns results with summary when service configured", async () => {
-    const mockService = createMockProductService({
+  test("tool returns results with summary", async () => {
+    mockService = createMockProductService({
       updateBulkResponse: [
         { id: "123", success: true, product: { id: "123", name: "Updated" } },
         { id: "456", success: true },
       ],
     });
-
-    setProductService(mockService as never);
 
     const result = await updateProducts({
       updates: [
@@ -64,16 +79,6 @@ describe("update-products tool", () => {
     expect(result.results).toHaveLength(2);
     expect(result.summary.total).toBe(2);
     expect(result.summary.success).toBe(2);
-  });
-
-  test("tool throws error when service not configured", async () => {
-    setProductService(null as never);
-
-    await expect(
-      updateProducts({
-        updates: [{ id: "123", updates: { name: "Test" } }],
-      } as never)
-    ).rejects.toThrow("ProductService not configured");
   });
 
   test("schema requires at least one update", () => {

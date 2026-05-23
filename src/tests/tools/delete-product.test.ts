@@ -1,10 +1,9 @@
-import { test, expect, describe } from "bun:test";
+import { test, expect, describe, mock, beforeAll, beforeEach } from "bun:test";
 
-import deleteProduct, {
-  metadata,
-  schema,
-  setProductService,
-} from "../../tools/delete-product";
+let deleteProduct: any;
+let metadata: any;
+let schema: any;
+let mockService: any;
 
 function createMockProductService(
   overrides: {
@@ -21,7 +20,25 @@ function createMockProductService(
   };
 }
 
+beforeAll(async () => {
+  mock.module("../../services/factory", () => ({
+    createImageServiceInstance: () => mockService,
+    createProductServiceInstance: () => mockService,
+    createStockServiceInstance: () => mockService,
+    createVariantServiceInstance: () => mockService,
+  }));
+
+  const mod = await import("../../tools/delete-product");
+  deleteProduct = mod.default;
+  metadata = mod.metadata;
+  schema = mod.schema;
+});
+
 describe("delete-product tool", () => {
+  beforeEach(() => {
+    mockService = createMockProductService();
+  });
+
   test("schema has correct structure", () => {
     expect(schema.product_id).toBeDefined();
     expect(schema.confirm).toBeDefined();
@@ -33,10 +50,6 @@ describe("delete-product tool", () => {
   });
 
   test("tool deletes product when confirm is true", async () => {
-    const mockService = createMockProductService();
-
-    setProductService(mockService as never);
-
     const result = await deleteProduct({
       product_id: "prod-123",
       confirm: true,
@@ -47,10 +60,6 @@ describe("delete-product tool", () => {
   });
 
   test("tool returns error when confirm is not true", async () => {
-    const mockService = createMockProductService();
-
-    setProductService(mockService as never);
-
     const result = await deleteProduct({
       product_id: "prod-123",
       confirm: false,
@@ -58,14 +67,6 @@ describe("delete-product tool", () => {
 
     expect(result.success).toBe(false);
     expect(result.error).toContain("confirm: true");
-  });
-
-  test("tool throws error when service not configured", async () => {
-    setProductService(null as never);
-
-    await expect(
-      deleteProduct({ product_id: "prod-123", confirm: true } as never)
-    ).rejects.toThrow("ProductService not configured");
   });
 
   test("schema confirm field requires boolean", () => {
