@@ -1,177 +1,77 @@
-# xmcp Application
+# Tiendanube / Nuvemshop MCP Server
 
-This project was created with [create-xmcp-app](https://github.com/basementstudio/xmcp).
+[![es](https://img.shields.io/badge/lang-es-red.svg)](README.es.md)
+
+An implementation of the **Model Context Protocol (MCP)** server for **Tiendanube** (also known as Nuvemshop in Brazil). This server allows AI models (like Claude, Gemini, ChatGPT) to programmatically manage a Tiendanube store's products, stock, variants, and images.
+
+Built with [Bun](https://bun.sh/) and the [xmcp](https://github.com/basementstudio/xmcp) framework.
+
+---
+
+## Features (MCP Tools)
+
+This server exposes **8 tools** to manage the store's inventory:
+
+1. **`list-products`**: Retrieve a paginated list of products with support for status filters, search queries, and pagination.
+2. **`get-product`**: Get full product details including nested images, variants, and attribute options by ID.
+3. **`create-product`**: Atomically create a new product, including its variants and images in a single call.
+4. **`update-products`**: Batch update fields (name, description, price, stock, SKU) for multiple products.
+5. **`delete-product`**: Remove a product from the store by ID (requires safety confirmation).
+6. **`update-stock`**: Update the stock levels for multiple product variants in a single call.
+7. **`manage-variants`**: Create, update, or delete specific product variants (pricing, stock, SKU, attributes).
+8. **`manage-images`**: Add new images (via URL), remove existing ones, or reorder the product's image gallery.
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### 1. Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+Ensure you have [Bun](https://bun.sh/) installed on your machine.
+
+### 2. Environment Setup
+
+Create a `.env` file in the root of the project:
+
+```env
+TIENDANUBE_STORE_ID="your_store_id"
+TIENDANUBE_ACCESS_TOKEN="your_api_access_token"
 ```
 
-This will start the MCP server with the selected transport method.
+### 3. Installation
 
-## Project Structure
+Install project dependencies:
 
-This project uses the structured approach where tools, prompts, and resources are automatically discovered from their respective directories:
+```bash
+bun install
+```
 
-- `src/tools` - Tool definitions
-- `src/prompts` - Prompt templates
-- `src/resources` - Resource handlers
+---
 
-### Tools
+## Configuration
 
-Each tool is defined in its own file with the following structure:
+To connect this server to your AI environment (e.g., Claude Desktop), add the server config to your configuration file (typically `C:\Users\<username>\AppData\Roaming\Claude\claude_desktop_config.json` on Windows):
 
-```typescript
-import { z } from "zod";
-import { type InferSchema, type ToolMetadata } from "xmcp";
-
-export const schema = {
-  name: z.string().describe("The name of the user to greet"),
-};
-
-export const metadata: ToolMetadata = {
-  name: "greet",
-  description: "Greet the user",
-  annotations: {
-    title: "Greet the user",
-    readOnlyHint: true,
-    destructiveHint: false,
-    idempotentHint: true,
-  },
-};
-
-export default function greet({ name }: InferSchema<typeof schema>) {
-  return `Hello, ${name}!`;
+```json
+{
+  "mcpServers": {
+    "tiendanube": {
+      "command": "bun",
+      "args": ["run", "src/index.ts"],
+      "env": {
+        "TIENDANUBE_STORE_ID": "your_store_id",
+        "TIENDANUBE_ACCESS_TOKEN": "your_api_access_token"
+      }
+    }
+  }
 }
 ```
 
-### Prompts
+---
 
-Prompts are template definitions for AI interactions:
+## Development & Maintenance
 
-```typescript
-import { z } from "zod";
-import { type InferSchema, type PromptMetadata } from "xmcp";
-
-export const schema = {
-  code: z.string().describe("The code to review"),
-};
-
-export const metadata: PromptMetadata = {
-  name: "review-code",
-  title: "Review Code",
-  description: "Review code for best practices and potential issues",
-  role: "user",
-};
-
-export default function reviewCode({ code }: InferSchema<typeof schema>) {
-  return `Please review this code: ${code}`;
-}
-```
-
-### Resources
-
-Resources provide data or content with URI-based access:
-
-```typescript
-import { z } from "zod";
-import { type ResourceMetadata, type InferSchema } from "xmcp";
-
-export const schema = {
-  userId: z.string().describe("The ID of the user"),
-};
-
-export const metadata: ResourceMetadata = {
-  name: "user-profile",
-  title: "User Profile",
-  description: "User profile information",
-};
-
-export default function handler({ userId }: InferSchema<typeof schema>) {
-  return `Profile data for user ${userId}`;
-}
-```
-
-## Adding New Components
-
-### Adding New Tools
-
-To add a new tool:
-
-1. Create a new `.ts` file in the `src/tools` directory
-2. Export a `schema` object defining the tool parameters using Zod
-3. Export a `metadata` object with tool information
-4. Export a default function that implements the tool logic
-
-### Adding New Prompts
-
-To add a new prompt:
-
-1. Create a new `.ts` file in the `src/prompts` directory
-2. Export a `schema` object defining the prompt parameters using Zod
-3. Export a `metadata` object with prompt information and role
-4. Export a default function that returns the prompt text
-
-### Adding New Resources
-
-To add a new resource:
-
-1. Create a new `.ts` file in the `src/resources` directory
-2. Use folder structure to define the URI (e.g., `(users)/[userId]/profile.ts` → `users://{userId}/profile`)
-3. Export a `schema` object for dynamic parameters (optional for static resources)
-4. Export a `metadata` object with resource information
-5. Export a default function that returns the resource content
-
-## Building for Production
-
-To build your project for production:
-
-```bash
-npm run build
-# or
-yarn build
-# or
-pnpm build
-```
-
-This will compile your TypeScript code and output it to the `dist` directory.
-
-## Running the Server
-
-You can run the server for the transport built with:
-
-- HTTP: `node dist/http.js`
-- STDIO: `node dist/stdio.js`
-
-Given the selected transport method, you will have a custom start script added to the `package.json` file.
-
-For HTTP:
-
-```bash
-npm run start-http
-# or
-yarn start-http
-# or
-pnpm start-http
-```
-
-For STDIO:
-
-```bash
-npm run start-stdio
-# or
-yarn start-stdio
-# or
-pnpm start-stdio
-```
-
-## Learn More
-
-- [xmcp Documentation](https://xmcp.dev/docs)
+- **Start in development mode**: `bun run dev`
+- **Run the test suite**: `bun test`
+- **Verify code style and lint**: `bun run check` (runs [Ultracite](https://github.com/IvanTsxx/mcp-tiendanube/blob/main/c:/Dev/works/mcp-tiendanube/.agents/skills/ultracite/SKILL.md) checks)
+- **Auto-fix formatting/linting issues**: `bun run fix`
