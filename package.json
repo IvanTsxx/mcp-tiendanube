@@ -1,0 +1,17 @@
+{
+  "name": "mcp-tiendanube",
+  "version": "0.1.0",
+  "description": "An xmcp application with tool syntax",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "xmcp build",
+    "dev": "xmcp dev",
+    "start": "node dist/http.js"
+  },
+  "dependencies": {
+    "xmcp": "0.6.10",
+    "zod": "^4.0.0"
+  }
+}
