@@ -8,70 +8,78 @@ Built with [Bun](https://bun.sh/) and the [xmcp](https://github.com/basementstud
 
 ---
 
-## Features (MCP Tools)
+## 🛠️ Features (MCP Tools)
 
 This server exposes **8 tools** to manage the store's inventory:
 
-1. **`list-products`**: Retrieve a paginated list of products with support for status filters, search queries, and pagination.
-2. **`get-product`**: Get full product details including nested images, variants, and attribute options by ID.
-3. **`create-product`**: Atomically create a new product, including its variants and images in a single call.
-4. **`update-products`**: Batch update fields (name, description, price, stock, SKU) for multiple products.
-5. **`delete-product`**: Remove a product from the store by ID (requires safety confirmation).
-6. **`update-stock`**: Update the stock levels for multiple product variants in a single call.
-7. **`manage-variants`**: Create, update, or delete specific product variants (pricing, stock, SKU, attributes).
-8. **`manage-images`**: Add new images (via URL), remove existing ones, or reorder the product's image gallery.
+| Tool Name         | Description                            | Key Capabilities                                     |
+| :---------------- | :------------------------------------- | :--------------------------------------------------- |
+| `list-products`   | Retrieve a paginated list of products. | Filters by status, search queries, pagination.       |
+| `get-product`     | Get full product details.              | Retrieves nested images, variants, attributes by ID. |
+| `create-product`  | Create a new product atomically.       | Creates product, variants, and images in one step.   |
+| `update-products` | Batch update multiple products.        | Modifies name, description, price, stock, SKU.       |
+| `delete-product`  | Delete a product by ID.                | Safe deletion with confirmation guard.               |
+| `update-stock`    | Batch update variant stock levels.     | Updates inventory counts across multiple variants.   |
+| `manage-variants` | Manage product variations.             | Create, update, or delete individual variants.       |
+| `manage-images`   | Manage product gallery images.         | Add via URL, remove, or reorder images.              |
 
 ---
 
-## Getting Started
+## ⚙️ Configuration & Variables
 
-### 1. Prerequisites
-
-Ensure you have [Bun](https://bun.sh/) installed on your machine.
-
-### 2. Environment Setup
+### 1. Environment Variables
 
 Create a `.env` file in the root of the project:
 
-```env
-TIENDANUBE_STORE_ID="your_store_id"
-TIENDANUBE_ACCESS_TOKEN="your_api_access_token"
-```
+| Variable                  | Description                     | Required | Example           |
+| :------------------------ | :------------------------------ | :------: | :---------------- |
+| `TIENDANUBE_STORE_ID`     | Your unique Tiendanube Store ID |   Yes    | `1234567`         |
+| `TIENDANUBE_ACCESS_TOKEN` | API Access Token                |   Yes    | `shpat_abc123...` |
 
-### 3. Installation
+### 2. Integration with AI Tools
 
-Install project dependencies:
-
-```bash
-bun install
-```
-
----
-
-## Configuration
-
-To connect this server to your AI environment (e.g., Claude Desktop), add the server config to your configuration file (typically `C:\Users\<username>\AppData\Roaming\Claude\claude_desktop_config.json` on Windows):
+To connect this server to any AI client (like Cursor, Claude Desktop, or OpenCode) via a remote HTTP connection, add the following configuration:
 
 ```json
-{
-  "mcpServers": {
-    "tiendanube": {
-      "command": "bun",
-      "args": ["run", "src/index.ts"],
-      "env": {
-        "TIENDANUBE_STORE_ID": "your_store_id",
-        "TIENDANUBE_ACCESS_TOKEN": "your_api_access_token"
-      }
-    }
-  }
+"mcp-tiendanube": {
+  "command": ["npx", "-y", "mcp-remote", "http://127.0.0.1:3001/mcp"],
+  "type": "local"
 }
 ```
 
 ---
 
-## Development & Maintenance
+## 🚀 Running & Testing
 
-- **Start in development mode**: `bun run dev`
-- **Run the test suite**: `bun test`
-- **Verify code style and lint**: `bun run check` (runs [Ultracite](https://github.com/IvanTsxx/mcp-tiendanube/blob/main/c:/Dev/works/mcp-tiendanube/.agents/skills/ultracite/SKILL.md) checks)
-- **Auto-fix formatting/linting issues**: `bun run fix`
+### Development
+
+Start the development server:
+
+```bash
+bun run dev
+```
+
+This starts the server on `http://127.0.0.1:3001/mcp`.
+
+### Testing
+
+You can inspect and test the tools interactively using the official MCP Inspector:
+
+```bash
+npx @modelcontextprotocol/inspector http://127.0.0.1:3001/mcp
+```
+
+Or run the unit tests:
+
+```bash
+bun test
+```
+
+---
+
+## 🛠️ Code Maintenance
+
+| Command         | Action                                                                                                                                                            |
+| :-------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bun run check` | Run linter and formatter checks ([Ultracite](https://github.com/IvanTsxx/mcp-tiendanube/blob/main/c:/Dev/works/mcp-tiendanube/.agents/skills/ultracite/SKILL.md)) |
+| `bun run fix`   | Auto-fix all linter and formatting issues                                                                                                                         |

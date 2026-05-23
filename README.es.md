@@ -8,70 +8,78 @@ Construido con [Bun](https://bun.sh/) y el framework [xmcp](https://github.com/b
 
 ---
 
-## Funcionalidades (Herramientas MCP)
+## 🛠️ Funcionalidades (Herramientas MCP)
 
 Este servidor expone **8 herramientas** para gestionar el inventario de la tienda:
 
-1. **`list-products`**: Obtiene una lista paginada de productos con soporte para filtros de estado, búsqueda y paginación.
-2. **`get-product`**: Obtiene los detalles completos de un producto por ID, incluyendo imágenes, variantes y opciones de atributos.
-3. **`create-product`**: Crea de manera atómica un nuevo producto, incluyendo sus variantes e imágenes en una sola llamada.
-4. **`update-products`**: Actualiza campos (nombre, descripción, precio, stock, SKU) de múltiples productos en lote.
-5. **`delete-product`**: Elimina un producto de la tienda por su ID (requiere confirmación de seguridad).
-6. **`update-stock`**: Actualiza los niveles de stock para múltiples variantes de productos en una sola llamada.
-7. **`manage-variants`**: Crea, actualiza o elimina variantes específicas de un producto (precio, stock, SKU, atributos).
-8. **`manage-images`**: Agrega nuevas imágenes (vía URL), elimina imágenes existentes o reordena la galería de imágenes del producto.
+| Herramienta       | Descripción                                | Capacidades Clave                                         |
+| :---------------- | :----------------------------------------- | :-------------------------------------------------------- |
+| `list-products`   | Obtiene una lista paginada de productos.   | Filtrado por estado, búsqueda de texto, paginación.       |
+| `get-product`     | Obtiene detalles completos de un producto. | Recupera imágenes, variantes y atributos por ID.          |
+| `create-product`  | Crea un producto de manera atómica.        | Crea producto, variantes e imágenes en un solo paso.      |
+| `update-products` | Actualiza múltiples productos en lote.     | Modifica nombre, descripción, precio, stock, SKU.         |
+| `delete-product`  | Elimina un producto por ID.                | Borrado seguro con confirmación obligatoria.              |
+| `update-stock`    | Actualiza stock de variantes en lote.      | Modifica cantidades de inventario de múltiples variantes. |
+| `manage-variants` | Administra variantes de productos.         | Crea, actualiza o elimina variantes individuales.         |
+| `manage-images`   | Administra imágenes del producto.          | Agrega por URL, elimina o reordena la galería.            |
 
 ---
 
-## Introducción
+## ⚙️ Configuración y Variables
 
-### 1. Requisitos previos
-
-Asegúrate de tener [Bun](https://bun.sh/) instalado en tu sistema.
-
-### 2. Configuración de Variables de Entorno
+### 1. Variables de Entorno
 
 Crea un archivo `.env` en la raíz del proyecto:
 
-```env
-TIENDANUBE_STORE_ID="tu_id_de_tienda"
-TIENDANUBE_ACCESS_TOKEN="tu_token_de_acceso_api"
-```
+| Variable                  | Descripción                      | Requerido | Ejemplo           |
+| :------------------------ | :------------------------------- | :-------: | :---------------- |
+| `TIENDANUBE_STORE_ID`     | ID único de tu tienda Tiendanube |    Sí     | `1234567`         |
+| `TIENDANUBE_ACCESS_TOKEN` | Token de acceso a la API         |    Sí     | `shpat_abc123...` |
 
-### 3. Instalación
+### 2. Integración con Clientes de IA
 
-Instala las dependencias del proyecto:
-
-```bash
-bun install
-```
-
----
-
-## Configuración
-
-Para conectar este servidor a tu entorno de IA (por ejemplo, Claude Desktop), agrega la configuración del servidor a tu archivo de configuración (normalmente `C:\Users\<usuario>\AppData\Roaming\Claude\claude_desktop_config.json` en Windows):
+Para conectar este servidor a cualquier cliente de IA (como Cursor, Claude Desktop o OpenCode) mediante conexión HTTP remota, agrega la siguiente configuración:
 
 ```json
-{
-  "mcpServers": {
-    "tiendanube": {
-      "command": "bun",
-      "args": ["run", "src/index.ts"],
-      "env": {
-        "TIENDANUBE_STORE_ID": "tu_id_de_tienda",
-        "TIENDANUBE_ACCESS_TOKEN": "tu_token_de_acceso_api"
-      }
-    }
-  }
+"mcp-tiendanube": {
+  "command": ["npx", "-y", "mcp-remote", "http://127.0.0.1:3001/mcp"],
+  "type": "local"
 }
 ```
 
 ---
 
-## Desarrollo y Mantenimiento
+## 🚀 Ejecución y Pruebas
 
-- **Iniciar en modo desarrollo**: `bun run dev`
-- **Correr la suite de pruebas**: `bun test`
-- **Verificar formato y linter**: `bun run check` (corre los análisis de [Ultracite](https://github.com/IvanTsxx/mcp-tiendanube/blob/main/c:/Dev/works/mcp-tiendanube/.agents/skills/ultracite/SKILL.md))
-- **Corregir problemas de formato/linter automáticamente**: `bun run fix`
+### Desarrollo
+
+Inicia el servidor de desarrollo:
+
+```bash
+bun run dev
+```
+
+Esto levantará el servidor en `http://127.0.0.1:3001/mcp`.
+
+### Pruebas
+
+Podés inspeccionar y probar las herramientas de manera interactiva usando el inspector oficial de MCP:
+
+```bash
+npx @modelcontextprotocol/inspector http://127.0.0.1:3001/mcp
+```
+
+O correr la suite de pruebas unitarias:
+
+```bash
+bun test
+```
+
+---
+
+## 🛠️ Mantenimiento de Código
+
+| Comando         | Acción                                                                                                                                                          |
+| :-------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `bun run check` | Corre el linter y formateador ([Ultracite](https://github.com/IvanTsxx/mcp-tiendanube/blob/main/c:/Dev/works/mcp-tiendanube/.agents/skills/ultracite/SKILL.md)) |
+| `bun run fix`   | Corrige automáticamente todos los problemas de linter y formato                                                                                                 |
