@@ -17,6 +17,12 @@
       "sourceType": "autoskills-registry",
       "computedHash": "5ca0e177c6aaaba1889255691224daafdb7d71f317cc70bede1590d3907ded42"
     },
+    "ultracite": {
+      "source": "haydenbleasel/ultracite",
+      "sourceType": "github",
+      "skillPath": "skills/ultracite/SKILL.md",
+      "computedHash": "ffc92e3354506db92901b15c627044866eced8c9a66b44df7245b55a535a49ac"
+    },
     "zod": {
       "source": "pproenca/dot-skills",
       "sourceType": "autoskills-registry",
