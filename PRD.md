@@ -8,7 +8,7 @@ Servidor MCP para gestion de catalogos de productos en Tiendanube.
 
 mcp-tiendanube es un servidor MCP (Model Context Protocol) que expone 7 herramientas de alto nivel para que los LLMs gestionen catalogos de productos en Tiendanube sin conocer los detalles de la API REST. El servidor esta construido sobre xmcp 0.6.10, utiliza Bun como runtime, Zod v4 para validacion de entrada, y una arquitectura de 4 capas que separa herramientas, servicios, adaptadores y cliente HTTP.
 
-El MVP (Fase 1) esta completo con 7 herramientas funcionales, 76 tests, 91.02% de cobertura de lineas, y build exitoso. El servidor no almacena estado local; todas las operaciones son passthrough hacia la API v1 de Tiendanube.
+El MVP (Fase 1) esta completo con 7 herramientas funcionales, 70 tests, 91.02% de cobertura de lineas, y build exitoso. El servidor no almacena estado local; todas las operaciones son passthrough hacia la API v1 de Tiendanube.
 
 ---
 
@@ -443,15 +443,15 @@ config/    → (sin dependencias externas, lee process.env)
 | Herramienta              | Metodo HTTP | Endpoint                                                  |
 | ------------------------ | ----------- | --------------------------------------------------------- |
 | list-products            | GET         | `/products?page={p}&per_page={n}&search={q}&stock={0\|1}` |
-| get-product              | GET         | `/products/{id}?fields=**`                                |
+| get-product              | GET         | `/products/{id}`                                          |
 | update-products          | PUT         | `/products/{id}`                                          |
 | manage-variants (create) | POST        | `/products/{id}/variants`                                 |
-| manage-variants (update) | PUT         | `/variants/{id}`                                          |
-| manage-variants (delete) | DELETE      | `/variants/{id}`                                          |
+| manage-variants (update) | PUT         | `/products/{product_id}/variants/{variant_id}`            |
+| manage-variants (delete) | DELETE      | `/products/{product_id}/variants/{variant_id}`            |
 | manage-images (add)      | POST        | `/products/{id}/images`                                   |
-| manage-images (reorder)  | PUT         | `/images/{id}`                                            |
-| manage-images (remove)   | DELETE      | `/images/{id}`                                            |
-| update-stock             | PUT         | `/variants/{id}`                                          |
+| manage-images (reorder)  | PUT         | `/products/{product_id}/images/{image_id}`                |
+| manage-images (remove)   | DELETE      | `/products/{product_id}/images/{image_id}`                |
+| update-stock             | PUT         | `/products/{product_id}/variants/{variant_id}`            |
 | delete-product           | DELETE      | `/products/{id}`                                          |
 
 ### Normalizacion de respuestas

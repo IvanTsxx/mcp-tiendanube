@@ -20,7 +20,7 @@ Construir un servidor MCP que permita a los LLMs gestionar catalogos de producto
 | -------------------------- | ------ | ------ |
 | Herramientas implementadas | 7      | 7      |
 | Archivos de test           | 12     | —      |
-| Tests ejecutados           | 76     | —      |
+| Tests ejecutados           | 70     | —      |
 | Tests fallidos             | 0      | 0      |
 | Cobertura de funciones     | 89.69% | >=80%  |
 | Cobertura de lineas        | 91.02% | >=80%  |
@@ -32,11 +32,11 @@ Construir un servidor MCP que permita a los LLMs gestionar catalogos de producto
 | Herramienta       | Accion                                    | Endpoints API                  |
 | ----------------- | ----------------------------------------- | ------------------------------ |
 | `list-products`   | Listado paginado con filtros              | `GET /products`                |
-| `get-product`     | Detalle completo con variantes e imagenes | `GET /products/{id}?fields=**` |
+| `get-product`     | Detalle completo con variantes e imagenes | `GET /products/{id}`           |
 | `update-products` | Actualizacion masiva de atributos         | `PUT /products/{id}`           |
-| `manage-variants` | Crear, actualizar o eliminar variantes    | `POST/PUT/DELETE /variants`    |
-| `manage-images`   | Agregar, eliminar o reordenar imagenes    | `POST/DELETE/PUT /images`      |
-| `update-stock`    | Actualizar niveles de stock por variante  | `PUT /variants/{id}`           |
+| `manage-variants` | Crear, actualizar o eliminar variantes    | `POST/PUT/DELETE /products/{product_id}/variants` |
+| `manage-images`   | Agregar, eliminar o reordenar imagenes    | `POST/DELETE/PUT /products/{product_id}/images`   |
+| `update-stock`    | Actualizar niveles de stock por variante  | `PUT /products/{product_id}/variants/{variant_id}` |
 | `delete-product`  | Eliminar producto con confirmacion        | `DELETE /products/{id}`        |
 
 ### Arquitectura implementada
@@ -94,11 +94,11 @@ src/
 - `PUT /v1/{store_id}/products/{id}`
 - `DELETE /v1/{store_id}/products/{id}`
 - `POST /v1/{store_id}/products/{id}/variants`
-- `PUT /v1/{store_id}/variants/{id}`
-- `DELETE /v1/{store_id}/variants/{id}`
+- `PUT /v1/{store_id}/products/{product_id}/variants/{variant_id}`
+- `DELETE /v1/{store_id}/products/{product_id}/variants/{variant_id}`
 - `POST /v1/{store_id}/products/{id}/images`
-- `PUT /v1/{store_id}/images/{id}`
-- `DELETE /v1/{store_id}/images/{id}`
+- `PUT /v1/{store_id}/products/{product_id}/images/{image_id}`
+- `DELETE /v1/{store_id}/products/{product_id}/images/{image_id}`
 
 **Complejidad estimada**: Media
 
@@ -118,7 +118,7 @@ src/
 
 **Criterios de finalizacion (todos cumplidos)**:
 
-- [x] 76 tests pasan con 0 fallos.
+- [x] 70 tests pasan con 0 fallos.
 - [x] Cobertura de lineas >=91%.
 - [x] `bun run build` genera artefactos sin errores.
 - [x] `bun x ultracite check` reporta 0 errores en `src/`.
