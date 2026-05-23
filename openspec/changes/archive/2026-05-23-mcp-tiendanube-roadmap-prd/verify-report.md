@@ -2,23 +2,23 @@
 
 ## Change Summary
 
-| Field | Value |
-|-------|-------|
-| **Change** | mcp-tiendanube-roadmap-prd |
-| **Mode** | Strict TDD (strict_tdd: true, bun test) |
-| **Status** | PASS WITH WARNINGS |
-| **Date** | 2026-05-22 |
+| Field      | Value                                   |
+| ---------- | --------------------------------------- |
+| **Change** | mcp-tiendanube-roadmap-prd              |
+| **Mode**   | Strict TDD (strict_tdd: true, bun test) |
+| **Status** | PASS WITH WARNINGS                      |
+| **Date**   | 2026-05-22                              |
 
 ## Completeness Table
 
-| Phase | Tasks | Completed | Status |
-|-------|-------|-----------|--------|
-| Phase 1: Foundation | 6 tasks | 6 | ✅ |
-| Phase 2: Adapters | 6 tasks | 6 | ✅ |
-| Phase 3: Services | 4 tasks | 4 | ✅ |
-| Phase 4: Tools | 7 tools | 7 | ✅ |
-| Phase 5: Integration | 5 tasks | 5 | ✅ |
-| **Total** | **28 tasks** | **28** | **100%** |
+| Phase                | Tasks        | Completed | Status   |
+| -------------------- | ------------ | --------- | -------- |
+| Phase 1: Foundation  | 6 tasks      | 6         | ✅       |
+| Phase 2: Adapters    | 6 tasks      | 6         | ✅       |
+| Phase 3: Services    | 4 tasks      | 4         | ✅       |
+| Phase 4: Tools       | 7 tools      | 7         | ✅       |
+| Phase 5: Integration | 5 tasks      | 5         | ✅       |
+| **Total**            | **28 tasks** | **28**    | **100%** |
 
 ## Build / Test / Coverage Evidence
 
@@ -34,10 +34,10 @@ Ran 76 tests across 12 files. [518.00ms]
 
 ### Coverage Report
 
-| Metric | Value | Threshold |
-|--------|-------|-----------|
-| Functions | 89.69% | ≥80% ✅ |
-| Lines | 91.02% | ≥80% ✅ |
+| Metric    | Value  | Threshold |
+| --------- | ------ | --------- |
+| Functions | 89.69% | ≥80% ✅   |
+| Lines     | 91.02% | ≥80% ✅   |
 
 ### Lint Check
 
@@ -61,39 +61,39 @@ TS errors in test files (known issue - non-blocking, documented in apply-progres
 
 ## Spec Compliance Matrix
 
-| Requirement | Tool | Schema | Handler | Service | Adapter | Tests | Status |
-|-------------|------|--------|---------|---------|---------|-------|--------|
-| list-products: paginated with filters | ✅ | ✅ | ✅ | ✅ | ✅ | 7 tests | COMPLIANT |
-| get-product: full detail + variants/images | ✅ | ✅ | ✅ | ✅ | ✅ | 5 tests | COMPLIANT |
-| update-products: bulk update + validation | ✅ | ✅ | ✅ | ✅ | ✅ | 4 tests | COMPLIANT |
-| manage-variants: create/update/delete | ✅ | ✅ | ✅ | ✅ | ✅ | 6 tests | COMPLIANT |
-| manage-images: add/remove/reorder | ✅ | ✅ | ✅ | ✅ | ✅ | 6 tests | COMPLIANT |
-| update-stock: stock >= 0 validation | ✅ | ✅ | ✅ | ✅ | ✅ | 5 tests | COMPLIANT |
-| delete-product: confirm required | ✅ | ✅ | ✅ | ✅ | ✅ | 5 tests | COMPLIANT |
+| Requirement                                | Tool | Schema | Handler | Service | Adapter | Tests   | Status    |
+| ------------------------------------------ | ---- | ------ | ------- | ------- | ------- | ------- | --------- |
+| list-products: paginated with filters      | ✅   | ✅     | ✅      | ✅      | ✅      | 7 tests | COMPLIANT |
+| get-product: full detail + variants/images | ✅   | ✅     | ✅      | ✅      | ✅      | 5 tests | COMPLIANT |
+| update-products: bulk update + validation  | ✅   | ✅     | ✅      | ✅      | ✅      | 4 tests | COMPLIANT |
+| manage-variants: create/update/delete      | ✅   | ✅     | ✅      | ✅      | ✅      | 6 tests | COMPLIANT |
+| manage-images: add/remove/reorder          | ✅   | ✅     | ✅      | ✅      | ✅      | 6 tests | COMPLIANT |
+| update-stock: stock >= 0 validation        | ✅   | ✅     | ✅      | ✅      | ✅      | 5 tests | COMPLIANT |
+| delete-product: confirm required           | ✅   | ✅     | ✅      | ✅      | ✅      | 5 tests | COMPLIANT |
 
 ## Correctness Table
 
-| Check | Result | Evidence |
-|-------|--------|----------|
-| Tool → Service wiring | ✅ | All 7 tools use setter injection with `set*Service()` |
-| Service → Adapter wiring | ✅ | All services created via `create*Service(adapter)` |
-| Adapter → API mapping | ✅ | All adapters call `TiendaNubeAdapter` methods |
-| Branded types used | ✅ | ProductId, VariantId, ImageId in domain models |
-| Zod schemas for inputs | ✅ | All 7 tools have explicit Zod schemas |
-| Error hierarchy | ✅ | TiendaNubeError, NotFoundError, UnauthorizedError, RateLimitError, ApiUnavailableError, ValidationError |
-| Retry logic | ✅ | 429 → 1s, 2s, 4s delays with 10% jitter |
-| Config decoupled | ✅ | loadConfig() singleton from env |
+| Check                    | Result | Evidence                                                                                                |
+| ------------------------ | ------ | ------------------------------------------------------------------------------------------------------- |
+| Tool → Service wiring    | ✅     | All 7 tools use setter injection with `set*Service()`                                                   |
+| Service → Adapter wiring | ✅     | All services created via `create*Service(adapter)`                                                      |
+| Adapter → API mapping    | ✅     | All adapters call `TiendaNubeAdapter` methods                                                           |
+| Branded types used       | ✅     | ProductId, VariantId, ImageId in domain models                                                          |
+| Zod schemas for inputs   | ✅     | All 7 tools have explicit Zod schemas                                                                   |
+| Error hierarchy          | ✅     | TiendaNubeError, NotFoundError, UnauthorizedError, RateLimitError, ApiUnavailableError, ValidationError |
+| Retry logic              | ✅     | 429 → 1s, 2s, 4s delays with 10% jitter                                                                 |
+| Config decoupled         | ✅     | loadConfig() singleton from env                                                                         |
 
 ## Design Coherence Table
 
-| Design Decision | Implementation | Status |
-|-----------------|----------------|--------|
-| Layer boundaries (tools→services→adapters→API) | ✅ Followed | COMPLIANT |
-| Bun.fetch for HTTP client | ✅ Native fetch | COMPLIANT |
-| Branded types for compile-time safety | ✅ ProductId, VariantId, ImageId | COMPLIANT |
-| One test file per module, co-located | ✅ test.ts next to .ts | COMPLIANT |
-| Error mapping (401→UnauthorizedError, 404→NotFoundError, etc.) | ✅ Implemented | COMPLIANT |
-| Response normalization in adapter layer | ✅ transform*Response functions | COMPLIANT |
+| Design Decision                                                | Implementation                   | Status    |
+| -------------------------------------------------------------- | -------------------------------- | --------- |
+| Layer boundaries (tools→services→adapters→API)                 | ✅ Followed                      | COMPLIANT |
+| Bun.fetch for HTTP client                                      | ✅ Native fetch                  | COMPLIANT |
+| Branded types for compile-time safety                          | ✅ ProductId, VariantId, ImageId | COMPLIANT |
+| One test file per module, co-located                           | ✅ test.ts next to .ts           | COMPLIANT |
+| Error mapping (401→UnauthorizedError, 404→NotFoundError, etc.) | ✅ Implemented                   | COMPLIANT |
+| Response normalization in adapter layer                        | ✅ transform\*Response functions | COMPLIANT |
 
 ## Issues
 
@@ -120,6 +120,7 @@ None.
 None significant. The implementation matches the spec exactly.
 
 **Minor deviations from design** (documented in apply-progress.md):
+
 - Branded types parsing uses `ProductIdSchema.parse(String(...))` instead of plain `String()` — necessary for type safety
 - Adapter tests simplified — Bun's mock capabilities are limited
 - Tool services use setter injection instead of constructor injection for testability
@@ -130,6 +131,7 @@ None significant. The implementation matches the spec exactly.
 **PASS**
 
 All spec requirements are implemented and tested:
+
 - ✅ 76 tests pass (100% pass rate)
 - ✅ 91.02% line coverage (>80% threshold)
 - ✅ All 7 tools functional with correct schema, handler, service, adapter layers
@@ -139,6 +141,7 @@ All spec requirements are implemented and tested:
 - ✅ No secrets in code
 
 **Warnings**:
+
 - Build TS errors in test files (documented, non-blocking)
 - Lint issue in openspec/ (non-source, non-blocking)
 
@@ -146,18 +149,18 @@ All spec requirements are implemented and tested:
 
 ## Appendix: Test File Map
 
-| Test File | Tests | Source File |
-|-----------|-------|-------------|
-| `src/domain/models/product.test.ts` | 11 | `product.ts` |
-| `src/domain/errors.test.ts` | 7 | `errors.ts` |
-| `src/config/env.test.ts` | 4 | `env.ts` |
-| `src/adapters/tiendanube.adapter.test.ts` | 7 | `tiendanube.adapter.ts` |
-| `src/adapters/product.adapter.test.ts` | 4 | `product.adapter.ts` |
-| `src/tools/list-products.test.ts` | 7 | `list-products.ts` |
-| `src/tools/get-product.test.ts` | 5 | `get-product.ts` |
-| `src/tools/update-products.test.ts` | 4 | `update-products.ts` |
-| `src/tools/manage-variants.test.ts` | 6 | `manage-variants.ts` |
-| `src/tools/manage-images.test.ts` | 6 | `manage-images.ts` |
-| `src/tools/update-stock.test.ts` | 5 | `update-stock.ts` |
-| `src/tools/delete-product.test.ts` | 5 | `delete-product.ts` |
-| **Total** | **76** | |
+| Test File                                 | Tests  | Source File             |
+| ----------------------------------------- | ------ | ----------------------- |
+| `src/domain/models/product.test.ts`       | 11     | `product.ts`            |
+| `src/domain/errors.test.ts`               | 7      | `errors.ts`             |
+| `src/config/env.test.ts`                  | 4      | `env.ts`                |
+| `src/adapters/tiendanube.adapter.test.ts` | 7      | `tiendanube.adapter.ts` |
+| `src/adapters/product.adapter.test.ts`    | 4      | `product.adapter.ts`    |
+| `src/tools/list-products.test.ts`         | 7      | `list-products.ts`      |
+| `src/tools/get-product.test.ts`           | 5      | `get-product.ts`        |
+| `src/tools/update-products.test.ts`       | 4      | `update-products.ts`    |
+| `src/tools/manage-variants.test.ts`       | 6      | `manage-variants.ts`    |
+| `src/tools/manage-images.test.ts`         | 6      | `manage-images.ts`      |
+| `src/tools/update-stock.test.ts`          | 5      | `update-stock.ts`       |
+| `src/tools/delete-product.test.ts`        | 5      | `delete-product.ts`     |
+| **Total**                                 | **76** |                         |

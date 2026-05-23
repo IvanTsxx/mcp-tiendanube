@@ -10,46 +10,46 @@
 
 ### Phase 1: Foundation ✅
 
-| Task | Status | Evidence |
-|------|--------|----------|
-| 1.1 Domain models (Product, Variant, Image) | ✅ | product.test.ts 11 tests pass |
-| 1.2 Pagination types | ✅ | pagination.ts created |
-| 1.3 Error types | ✅ | errors.test.ts 7 tests pass |
-| 1.4 Config/env loading | ✅ | env.test.ts 4 tests pass |
-| 1.5 .env.example | ✅ | created |
-| 1.6-1.9 TDD for domain/config | ✅ | All tests pass |
+| Task                                        | Status | Evidence                      |
+| ------------------------------------------- | ------ | ----------------------------- |
+| 1.1 Domain models (Product, Variant, Image) | ✅     | product.test.ts 11 tests pass |
+| 1.2 Pagination types                        | ✅     | pagination.ts created         |
+| 1.3 Error types                             | ✅     | errors.test.ts 7 tests pass   |
+| 1.4 Config/env loading                      | ✅     | env.test.ts 4 tests pass      |
+| 1.5 .env.example                            | ✅     | created                       |
+| 1.6-1.9 TDD for domain/config               | ✅     | All tests pass                |
 
 ### Phase 2: Adapters ✅
 
-| Task | Status | Evidence |
-|------|--------|----------|
-| 2.1 TiendanubeAdapter interface | ✅ | tiendanube.adapter.ts created |
-| 2.2 Tiendanube adapter tests | ✅ | 7 tests pass |
-| 2.4 ProductAdapter | ✅ | product.adapter.ts created |
-| 2.5 Product adapter tests | ✅ | 4 tests pass |
-| 2.7 VariantAdapter | ✅ | variant.adapter.ts created |
-| 2.10 ImageAdapter | ✅ | image.adapter.ts created |
+| Task                            | Status | Evidence                      |
+| ------------------------------- | ------ | ----------------------------- |
+| 2.1 TiendanubeAdapter interface | ✅     | tiendanube.adapter.ts created |
+| 2.2 Tiendanube adapter tests    | ✅     | 7 tests pass                  |
+| 2.4 ProductAdapter              | ✅     | product.adapter.ts created    |
+| 2.5 Product adapter tests       | ✅     | 4 tests pass                  |
+| 2.7 VariantAdapter              | ✅     | variant.adapter.ts created    |
+| 2.10 ImageAdapter               | ✅     | image.adapter.ts created      |
 
 ### Phase 3: Services ✅
 
-| Task | Status | Evidence |
-|------|--------|----------|
-| 3.1 ProductService | ✅ | product.service.ts created |
-| 3.4 VariantService | ✅ | variant.service.ts created |
-| 3.7 ImageService | ✅ | image.service.ts created |
-| 3.10 StockService | ✅ | stock.service.ts created |
+| Task               | Status | Evidence                   |
+| ------------------ | ------ | -------------------------- |
+| 3.1 ProductService | ✅     | product.service.ts created |
+| 3.4 VariantService | ✅     | variant.service.ts created |
+| 3.7 ImageService   | ✅     | image.service.ts created   |
+| 3.10 StockService  | ✅     | stock.service.ts created   |
 
 ### Phase 4: Tools ✅ (7 tools)
 
-| Tool | Status | Tests |
-|------|--------|-------|
-| list-products | ✅ | 7 tests pass |
-| get-product | ✅ | 5 tests pass |
-| update-products | ✅ | 4 tests pass |
-| manage-variants | ✅ | 6 tests pass |
-| manage-images | ✅ | 6 tests pass |
-| update-stock | ✅ | 5 tests pass |
-| delete-product | ✅ | 5 tests pass |
+| Tool            | Status | Tests        |
+| --------------- | ------ | ------------ |
+| list-products   | ✅     | 7 tests pass |
+| get-product     | ✅     | 5 tests pass |
+| update-products | ✅     | 4 tests pass |
+| manage-variants | ✅     | 6 tests pass |
+| manage-images   | ✅     | 6 tests pass |
+| update-stock    | ✅     | 5 tests pass |
+| delete-product  | ✅     | 5 tests pass |
 
 ### Phase 5: Integration ✅
 
@@ -61,20 +61,20 @@
 
 ## TDD Cycle Evidence
 
-| Task | Test File | Layer | RED | GREEN | TRIANGULATE | REFACTOR |
-|------|-----------|-------|-----|-------|-------------|----------|
-| 1.1 | product.test.ts | Unit | ✅ Written | ✅ Passed | ✅ 11 cases | ✅ Clean |
-| 1.3 | errors.test.ts | Unit | ✅ Written | ✅ Passed | ✅ 7 cases | ✅ Clean |
-| 1.4 | env.test.ts | Unit | ✅ Written | ✅ Passed | ✅ 4 cases | ✅ Clean |
-| 2.2 | tiendanube.adapter.test.ts | Unit | ✅ Written | ✅ Passed | ✅ 7 cases | ✅ Clean |
-| 2.5 | product.adapter.test.ts | Unit | ✅ Written | ✅ Passed | ✅ 4 cases | ✅ Clean |
-| 4.1 | list-products.test.ts | Unit | ✅ Written | ✅ Passed | ✅ 7 cases | ✅ Clean |
-| 4.2 | get-product.test.ts | Unit | ✅ Written | ✅ Passed | ✅ 5 cases | ✅ Clean |
-| 4.3 | update-products.test.ts | Unit | ✅ Written | ✅ Passed | ✅ 4 cases | ✅ Clean |
-| 4.4 | manage-variants.test.ts | Unit | ✅ Written | ✅ Passed | ✅ 6 cases | ✅ Clean |
-| 4.5 | manage-images.test.ts | Unit | ✅ Written | ✅ Passed | ✅ 6 cases | ✅ Clean |
-| 4.6 | update-stock.test.ts | Unit | ✅ Written | ✅ Passed | ✅ 5 cases | ✅ Clean |
-| 4.7 | delete-product.test.ts | Unit | ✅ Written | ✅ Passed | ✅ 5 cases | ✅ Clean |
+| Task | Test File                  | Layer | RED        | GREEN     | TRIANGULATE | REFACTOR |
+| ---- | -------------------------- | ----- | ---------- | --------- | ----------- | -------- |
+| 1.1  | product.test.ts            | Unit  | ✅ Written | ✅ Passed | ✅ 11 cases | ✅ Clean |
+| 1.3  | errors.test.ts             | Unit  | ✅ Written | ✅ Passed | ✅ 7 cases  | ✅ Clean |
+| 1.4  | env.test.ts                | Unit  | ✅ Written | ✅ Passed | ✅ 4 cases  | ✅ Clean |
+| 2.2  | tiendanube.adapter.test.ts | Unit  | ✅ Written | ✅ Passed | ✅ 7 cases  | ✅ Clean |
+| 2.5  | product.adapter.test.ts    | Unit  | ✅ Written | ✅ Passed | ✅ 4 cases  | ✅ Clean |
+| 4.1  | list-products.test.ts      | Unit  | ✅ Written | ✅ Passed | ✅ 7 cases  | ✅ Clean |
+| 4.2  | get-product.test.ts        | Unit  | ✅ Written | ✅ Passed | ✅ 5 cases  | ✅ Clean |
+| 4.3  | update-products.test.ts    | Unit  | ✅ Written | ✅ Passed | ✅ 4 cases  | ✅ Clean |
+| 4.4  | manage-variants.test.ts    | Unit  | ✅ Written | ✅ Passed | ✅ 6 cases  | ✅ Clean |
+| 4.5  | manage-images.test.ts      | Unit  | ✅ Written | ✅ Passed | ✅ 6 cases  | ✅ Clean |
+| 4.6  | update-stock.test.ts       | Unit  | ✅ Written | ✅ Passed | ✅ 5 cases  | ✅ Clean |
+| 4.7  | delete-product.test.ts     | Unit  | ✅ Written | ✅ Passed | ✅ 5 cases  | ✅ Clean |
 
 ## Test Summary
 
@@ -86,42 +86,42 @@
 
 ## Files Created/Modified
 
-| File | Action | Description |
-|------|--------|-------------|
-| `src/domain/models/product.ts` | Created | Product, Variant, Image types + Zod schemas + branded IDs |
-| `src/domain/models/product.test.ts` | Created | Domain model tests |
-| `src/domain/models/pagination.ts` | Created | Pagination types |
-| `src/domain/errors.ts` | Created | TiendaNubeError, NotFoundError, UnauthorizedError, etc. |
-| `src/domain/errors.test.ts` | Created | Error type tests |
-| `src/config/env.ts` | Created | TokenConfig schema and loadConfig() |
-| `src/config/env.test.ts` | Created | Config tests |
-| `.env.example` | Created | Template env file |
-| `src/adapters/tiendanube.adapter.ts` | Created | Bun.fetch HTTP client with auth, retry, error mapping |
-| `src/adapters/tiendanube.adapter.test.ts` | Created | Adapter interface tests |
-| `src/adapters/product.adapter.ts` | Created | Product API mapping |
-| `src/adapters/product.adapter.test.ts` | Created | Product adapter tests |
-| `src/adapters/variant.adapter.ts` | Created | Variant API mapping |
-| `src/adapters/image.adapter.ts` | Created | Image API mapping |
-| `src/services/product.service.ts` | Created | ProductService business logic |
-| `src/services/variant.service.ts` | Created | VariantService |
-| `src/services/image.service.ts` | Created | ImageService |
-| `src/services/stock.service.ts` | Created | StockService |
-| `src/tools/list-products.ts` | Created | list-products MCP tool |
-| `src/tools/list-products.test.ts` | Created | Tool tests |
-| `src/tools/get-product.ts` | Created | get-product MCP tool |
-| `src/tools/get-product.test.ts` | Created | Tool tests |
-| `src/tools/update-products.ts` | Created | update-products MCP tool |
-| `src/tools/update-products.test.ts` | Created | Tool tests |
-| `src/tools/manage-variants.ts` | Created | manage-variants MCP tool |
-| `src/tools/manage-variants.test.ts` | Created | Tool tests |
-| `src/tools/manage-images.ts` | Created | manage-images MCP tool |
-| `src/tools/manage-images.test.ts` | Created | Tool tests |
-| `src/tools/update-stock.ts` | Created | update-stock MCP tool |
-| `src/tools/update-stock.test.ts` | Created | Tool tests |
-| `src/tools/delete-product.ts` | Created | delete-product MCP tool |
-| `src/tools/delete-product.test.ts` | Created | Tool tests |
-| `oxlint.config.ts` | Modified | Added rules to disable problematic lint rules |
-| `tsconfig.build.json` | Created | Build-specific tsconfig (not used by xmcp) |
+| File                                      | Action   | Description                                               |
+| ----------------------------------------- | -------- | --------------------------------------------------------- |
+| `src/domain/models/product.ts`            | Created  | Product, Variant, Image types + Zod schemas + branded IDs |
+| `src/domain/models/product.test.ts`       | Created  | Domain model tests                                        |
+| `src/domain/models/pagination.ts`         | Created  | Pagination types                                          |
+| `src/domain/errors.ts`                    | Created  | TiendaNubeError, NotFoundError, UnauthorizedError, etc.   |
+| `src/domain/errors.test.ts`               | Created  | Error type tests                                          |
+| `src/config/env.ts`                       | Created  | TokenConfig schema and loadConfig()                       |
+| `src/config/env.test.ts`                  | Created  | Config tests                                              |
+| `.env.example`                            | Created  | Template env file                                         |
+| `src/adapters/tiendanube.adapter.ts`      | Created  | Bun.fetch HTTP client with auth, retry, error mapping     |
+| `src/adapters/tiendanube.adapter.test.ts` | Created  | Adapter interface tests                                   |
+| `src/adapters/product.adapter.ts`         | Created  | Product API mapping                                       |
+| `src/adapters/product.adapter.test.ts`    | Created  | Product adapter tests                                     |
+| `src/adapters/variant.adapter.ts`         | Created  | Variant API mapping                                       |
+| `src/adapters/image.adapter.ts`           | Created  | Image API mapping                                         |
+| `src/services/product.service.ts`         | Created  | ProductService business logic                             |
+| `src/services/variant.service.ts`         | Created  | VariantService                                            |
+| `src/services/image.service.ts`           | Created  | ImageService                                              |
+| `src/services/stock.service.ts`           | Created  | StockService                                              |
+| `src/tools/list-products.ts`              | Created  | list-products MCP tool                                    |
+| `src/tools/list-products.test.ts`         | Created  | Tool tests                                                |
+| `src/tools/get-product.ts`                | Created  | get-product MCP tool                                      |
+| `src/tools/get-product.test.ts`           | Created  | Tool tests                                                |
+| `src/tools/update-products.ts`            | Created  | update-products MCP tool                                  |
+| `src/tools/update-products.test.ts`       | Created  | Tool tests                                                |
+| `src/tools/manage-variants.ts`            | Created  | manage-variants MCP tool                                  |
+| `src/tools/manage-variants.test.ts`       | Created  | Tool tests                                                |
+| `src/tools/manage-images.ts`              | Created  | manage-images MCP tool                                    |
+| `src/tools/manage-images.test.ts`         | Created  | Tool tests                                                |
+| `src/tools/update-stock.ts`               | Created  | update-stock MCP tool                                     |
+| `src/tools/update-stock.test.ts`          | Created  | Tool tests                                                |
+| `src/tools/delete-product.ts`             | Created  | delete-product MCP tool                                   |
+| `src/tools/delete-product.test.ts`        | Created  | Tool tests                                                |
+| `oxlint.config.ts`                        | Modified | Added rules to disable problematic lint rules             |
+| `tsconfig.build.json`                     | Created  | Build-specific tsconfig (not used by xmcp)                |
 
 ## Deviations from Design
 

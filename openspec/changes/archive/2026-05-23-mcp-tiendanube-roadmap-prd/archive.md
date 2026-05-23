@@ -2,13 +2,13 @@
 
 ## Change Metadata
 
-| Field | Value |
-|-------|-------|
-| **Change Name** | mcp-tiendanube-roadmap-prd |
-| **Archived Date** | 2026-05-23 |
-| **Archived To** | `openspec/changes/archive/2026-05-23-mcp-tiendanube-roadmap-prd/` |
-| **Artifact Store** | openspec |
-| **Status** | COMPLETE |
+| Field              | Value                                                             |
+| ------------------ | ----------------------------------------------------------------- |
+| **Change Name**    | mcp-tiendanube-roadmap-prd                                        |
+| **Archived Date**  | 2026-05-23                                                        |
+| **Archived To**    | `openspec/changes/archive/2026-05-23-mcp-tiendanube-roadmap-prd/` |
+| **Artifact Store** | openspec                                                          |
+| **Status**         | COMPLETE                                                          |
 
 ## Executive Summary
 
@@ -16,31 +16,31 @@ Built an MVP MCP server giving LLMs full product lifecycle management for Tienda
 
 ## Specs Synced
 
-| Domain | Action | Details |
-|--------|--------|---------|
+| Domain       | Action  | Details                                                                                         |
+| ------------ | ------- | ----------------------------------------------------------------------------------------------- |
 | product-crud | Created | Main spec created at `openspec/specs/product-crud/spec.md` — 7 requirements, 4 NFRs, 3 ArchReqs |
 
 Delta spec merged into new main spec (no prior spec existed). All 7 requirements + NFRs + Architecture Requirements now live in `openspec/specs/product-crud/spec.md`.
 
 ## Archive Contents
 
-| Artifact | Status |
-|----------|--------|
-| `proposal.md` | ✅ |
-| `exploration.md` | ✅ |
-| `specs/product-crud/spec.md` | ✅ |
-| `design.md` | ✅ |
-| `tasks.md` | ✅ (28/28 tasks complete) |
-| `apply-progress.md` | ✅ |
-| `verify-report.md` | ✅ |
+| Artifact                     | Status                    |
+| ---------------------------- | ------------------------- |
+| `proposal.md`                | ✅                        |
+| `exploration.md`             | ✅                        |
+| `specs/product-crud/spec.md` | ✅                        |
+| `design.md`                  | ✅                        |
+| `tasks.md`                   | ✅ (28/28 tasks complete) |
+| `apply-progress.md`          | ✅                        |
+| `verify-report.md`           | ✅                        |
 
 ## Verification Results
 
-| Metric | Value | Threshold |
-|--------|-------|-----------|
-| Tests passing | 76/76 | 100% ✅ |
-| Line coverage | 91.02% | ≥80% ✅ |
-| Tools compliant | 7/7 | 100% ✅ |
+| Metric          | Value  | Threshold |
+| --------------- | ------ | --------- |
+| Tests passing   | 76/76  | 100% ✅   |
+| Line coverage   | 91.02% | ≥80% ✅   |
+| Tools compliant | 7/7    | 100% ✅   |
 
 **Verdict**: PASS — ready for archive.
 
