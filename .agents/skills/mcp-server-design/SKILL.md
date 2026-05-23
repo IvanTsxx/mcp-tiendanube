@@ -30,6 +30,7 @@ Traditional API design optimizes for programmatic access with granular endpoints
 ### 1. Purpose-Built Tools Over Generic Wrappers
 
 **Anti-pattern**: Wrapping every API endpoint as a tool
+
 ```typescript
 // Bad: Generic database tools
 // src/tools/run-sql.ts
@@ -38,6 +39,7 @@ Traditional API design optimizes for programmatic access with granular endpoints
 ```
 
 **Best practice**: Design tools around user tasks
+
 ```typescript
 // Good: Task-oriented tools
 // src/tools/prepare-database-migration.ts
@@ -50,7 +52,8 @@ export const schema = {
 
 export const metadata: ToolMetadata = {
   name: "prepare-database-migration",
-  description: "Design a database change with safety checks and reviewed migration plan",
+  description:
+    "Design a database change with safety checks and reviewed migration plan",
 };
 
 // src/tools/analyze-slow-queries.ts
@@ -60,11 +63,13 @@ export const metadata: ToolMetadata = {
 ### 2. Minimize Tool Count
 
 LLMs struggle with long tool lists. Each additional tool:
+
 - Increases selection confusion
 - Adds tokens to every request
 - Dilutes the purpose of each tool
 
 **Guidelines**:
+
 - Start with 5-10 core tools
 - Add tools only when evals show they're needed
 - Combine related operations when sensible
@@ -73,17 +78,18 @@ LLMs struggle with long tool lists. Each additional tool:
 
 Tool names guide LLM behavior. The name should describe the task, not the mechanism.
 
-| Instead of... | Use... |
-|---------------|--------|
-| `post-slack-message` | `notify-team` |
-| `run-sql-query` | `analyze-data` |
-| `call-api-endpoint` | `check-service-status` |
+| Instead of...        | Use...                 |
+| -------------------- | ---------------------- |
+| `post-slack-message` | `notify-team`          |
+| `run-sql-query`      | `analyze-data`         |
+| `call-api-endpoint`  | `check-service-status` |
 
 ### 4. Shape Tools Like Tasks
 
 For complex flows, one tool per task beats one tool per step.
 
 **Anti-pattern**: Breaking deployment into atomic operations
+
 ```typescript
 // Bad: Too many granular tools
 // src/tools/create-branch.ts
@@ -95,6 +101,7 @@ For complex flows, one tool per task beats one tool per step.
 ```
 
 **Best practice**: Single tool for the complete task
+
 ```typescript
 // src/tools/deploy-changes.ts
 import { z } from "zod";
@@ -121,12 +128,14 @@ export default function deployChanges({ description, runTests, autoMerge }) {
 ### When to Create a New Tool
 
 Create a new tool when:
+
 - Users frequently ask for this specific capability
 - The task has clear boundaries and purpose
 - Existing tools can't accomplish it cleanly
 - Evals show the LLM selects incorrect tools for this task
 
 Don't create a new tool when:
+
 - An existing tool can handle it with minor parameter changes
 - It duplicates functionality (combine instead)
 - It's a rare edge case (handle with existing tools + guidance)
@@ -134,22 +143,24 @@ Don't create a new tool when:
 ### When to Combine Operations
 
 Combine multiple operations into one tool when:
+
 - They're almost always used together
 - The intermediate results aren't useful alone
 - Splitting them creates unnecessary decision points
 
 Keep operations separate when:
+
 - Users need granular control
 - Intermediate results have standalone value
 - Combining would create an overly complex tool
 
 ### Balancing Granularity
 
-| Granular Tools | Combined Tools |
-|----------------|----------------|
-| More flexibility | Simpler mental model |
-| Higher selection burden | Clearer intent |
-| Risk of misuse | Less customizable |
+| Granular Tools          | Combined Tools       |
+| ----------------------- | -------------------- |
+| More flexibility        | Simpler mental model |
+| Higher selection burden | Clearer intent       |
+| Risk of misuse          | Less customizable    |
 
 ## Quick Reference
 

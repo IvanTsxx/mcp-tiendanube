@@ -43,6 +43,7 @@ A developer wraps their PostgreSQL API:
 ```
 
 **Problems**:
+
 - Generic names don't guide behavior
 - LLM must understand PostgreSQL internals
 - High risk of destructive operations
@@ -60,7 +61,8 @@ export const schema = {};
 
 export const metadata: ToolMetadata = {
   name: "explore-database",
-  description: "Understand database structure. Returns schemas, tables, relationships, and sample data to help answer questions.",
+  description:
+    "Understand database structure. Returns schemas, tables, relationships, and sample data to help answer questions.",
 };
 
 // src/tools/query-data.ts
@@ -70,7 +72,8 @@ export const schema = {
 
 export const metadata: ToolMetadata = {
   name: "query-data",
-  description: "Answer questions about data. Describe what you want to know and get formatted results with insights.",
+  description:
+    "Answer questions about data. Describe what you want to know and get formatted results with insights.",
 };
 
 // src/tools/prepare-migration.ts
@@ -80,23 +83,27 @@ export const schema = {
 
 export const metadata: ToolMetadata = {
   name: "prepare-migration",
-  description: "Design a database change. Describe the change needed and get a reviewed migration plan with safety checks.",
+  description:
+    "Design a database change. Describe the change needed and get a reviewed migration plan with safety checks.",
 };
 
 // src/tools/optimize-performance.ts
 export const metadata: ToolMetadata = {
   name: "optimize-performance",
-  description: "Identify and fix slow queries. Analyzes recent query patterns and suggests specific improvements.",
+  description:
+    "Identify and fix slow queries. Analyzes recent query patterns and suggests specific improvements.",
 };
 
 // src/tools/backup-restore.ts
 export const metadata: ToolMetadata = {
   name: "backup-restore",
-  description: "Create backups or restore from existing ones. Handles all safety checks automatically.",
+  description:
+    "Create backups or restore from existing ones. Handles all safety checks automatically.",
 };
 ```
 
 **Benefits**:
+
 - Tools with clear purposes
 - Names describe user goals
 - Built-in safety checks
@@ -130,12 +137,16 @@ import type { ToolMetadata } from "xmcp";
 
 export const schema = {
   message: z.string().describe("The update to send to the team"),
-  urgency: z.enum(["low", "normal", "high"]).default("normal").describe("Message urgency level"),
+  urgency: z
+    .enum(["low", "normal", "high"])
+    .default("normal")
+    .describe("Message urgency level"),
 };
 
 export const metadata: ToolMetadata = {
   name: "notify-team",
-  description: "Send updates to team members. Handles channel selection, formatting, and mentions automatically based on urgency and topic.",
+  description:
+    "Send updates to team members. Handles channel selection, formatting, and mentions automatically based on urgency and topic.",
 };
 
 // src/tools/find-discussion.ts
@@ -145,7 +156,8 @@ export const schema = {
 
 export const metadata: ToolMetadata = {
   name: "find-discussion",
-  description: "Find relevant conversations and context. Searches across channels and threads to surface related discussions.",
+  description:
+    "Find relevant conversations and context. Searches across channels and threads to surface related discussions.",
 };
 
 // src/tools/summarize-channel.ts
@@ -155,7 +167,8 @@ export const schema = {
 
 export const metadata: ToolMetadata = {
   name: "summarize-channel",
-  description: "Get caught up on a channel. Returns key discussions, decisions, and action items from recent activity.",
+  description:
+    "Get caught up on a channel. Returns key discussions, decisions, and action items from recent activity.",
 };
 
 // src/tools/coordinate-meeting.ts
@@ -166,7 +179,8 @@ export const schema = {
 
 export const metadata: ToolMetadata = {
   name: "coordinate-meeting",
-  description: "Schedule and announce meetings. Finds available times, creates calendar events, and notifies participants.",
+  description:
+    "Schedule and announce meetings. Finds available times, creates calendar events, and notifies participants.",
 };
 ```
 
@@ -184,6 +198,7 @@ export const metadata: ToolMetadata = {
 ```
 
 **Why it's bad**:
+
 - LLM has no guidance on capabilities
 - Impossible to validate inputs
 - No guardrails on dangerous operations
@@ -206,6 +221,7 @@ export const metadata: ToolMetadata = {
 ```
 
 **Why it's bad**:
+
 - HTTP methods are irrelevant to users
 - API versions create confusion
 - Names don't describe user intent
@@ -223,12 +239,14 @@ export const metadata: ToolMetadata = {
 ```
 
 **Why it's bad**:
+
 - Each step is a potential failure point
 - LLM must understand correct ordering
 - Intermediate states may be invalid
 - User asked for one thing, gets four tool calls
 
 **Better approach**:
+
 ```typescript
 // src/tools/create-user.ts
 import { z } from "zod";
@@ -241,7 +259,8 @@ export const schema = {
 
 export const metadata: ToolMetadata = {
   name: "create-user",
-  description: "Create a new user account. Validates email, checks username availability, creates the account, and sends welcome email. Returns the new user profile or specific validation errors.",
+  description:
+    "Create a new user account. Validates email, checks username availability, creates the account, and sends welcome email. Returns the new user profile or specific validation errors.",
 };
 ```
 

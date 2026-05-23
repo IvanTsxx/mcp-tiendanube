@@ -1,5 +1,5 @@
+import type { InferSchema, PromptMetadata } from "xmcp";
 import { z } from "zod";
-import { type InferSchema, type PromptMetadata } from "xmcp";
 
 // Define the schema for prompt parameters
 export const schema = {
@@ -8,10 +8,10 @@ export const schema = {
 
 // Define prompt metadata
 export const metadata: PromptMetadata = {
-  name: "review-code",
-  title: "Review Code",
   description: "Review code for best practices and potential issues",
+  name: "review-code",
   role: "user",
+  title: "Review Code",
 };
 
 // Prompt implementation

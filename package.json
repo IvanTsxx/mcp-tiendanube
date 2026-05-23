@@ -1,4 +1,16 @@
 {
+  "name": "mcp-tiendanube",
+  "version": "0.1.0",
+  "description": "An xmcp application with tool syntax",
+  "type": "module",
+  "scripts": {
+    "build": "xmcp build",
+    "dev": "xmcp dev",
+    "start": "node dist/http.js",
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "prepare": "lefthook install"
+  },
   "dependencies": {
     "xmcp": "0.6.10",
     "zod": "^4.0.0"
@@ -9,18 +21,6 @@
     "oxlint": "^1.66.0",
     "ultracite": "7.7.0"
   },
-  "name": "mcp-tiendanube",
-  "scripts": {
-    "build": "xmcp build",
-    "dev": "xmcp dev",
-    "start": "node dist/http.js",
-    "check": "ultracite check",
-    "fix": "ultracite fix",
-    "prepare": "lefthook install"
-  },
-  "type": "module",
-  "version": "0.1.0",
-  "description": "An xmcp application with tool syntax",
   "engines": {
     "node": ">=20.0.0"
   }
