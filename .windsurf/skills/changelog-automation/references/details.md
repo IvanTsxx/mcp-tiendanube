@@ -35,16 +35,19 @@
 
 [Unreleased]: https://github.com/user/repo/compare/v1.2.0...HEAD
 [1.2.0]: https://github.com/user/repo/compare/v1.1.0...v1.2.0
+
 ```
 
 ### 2. Conventional Commits
 
 ```
+
 <type>[optional scope]: <description>
 
 [optional body]
 
 [optional footer(s)]
+
 ```
 
 | Type       | Description      | Changelog Section  |
@@ -64,12 +67,14 @@
 ### 3. Semantic Versioning
 
 ```
+
 MAJOR.MINOR.PATCH
 
 MAJOR: Breaking changes (feat! or BREAKING CHANGE)
 MINOR: New features (feat)
 PATCH: Bug fixes (fix)
-```
+
+````
 
 ## Implementation
 
@@ -114,7 +119,7 @@ EOF
 # Setup husky
 npx husky init
 echo "npx --no -- commitlint --edit \$1" > .husky/commit-msg
-```
+````
 
 ### Method 2: standard-version Configuration
 
@@ -456,3 +461,4 @@ cz check --rev-range HEAD~5..HEAD
 
 ```markdown
 # Release v2.1.0 - January 15, 2024
+```

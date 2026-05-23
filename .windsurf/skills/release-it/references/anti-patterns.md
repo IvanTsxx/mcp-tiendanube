@@ -10,14 +10,14 @@ Every integration point -- every socket connection, HTTP call, database query, m
 
 ### How Integration Points Fail
 
-| Failure Mode | Description | Consequence |
-|-------------|-------------|-------------|
-| **Connection refused** | Remote host rejects the connection | Fast failure; relatively benign |
-| **Connection timeout** | Remote host does not respond to SYN | Thread blocked for 30-120 seconds (OS default) |
-| **Read timeout** | Connection established but response never arrives | Thread blocked indefinitely without explicit timeout |
-| **Partial response** | Connection drops mid-response | Corrupted data; parser exceptions |
-| **Slow response** | Response eventually arrives but takes minutes | Threads accumulate; pool exhaustion; cascading failure |
-| **Protocol violation** | Remote returns unexpected content type or format | Unhandled exceptions; crash |
+| Failure Mode           | Description                                       | Consequence                                            |
+| ---------------------- | ------------------------------------------------- | ------------------------------------------------------ |
+| **Connection refused** | Remote host rejects the connection                | Fast failure; relatively benign                        |
+| **Connection timeout** | Remote host does not respond to SYN               | Thread blocked for 30-120 seconds (OS default)         |
+| **Read timeout**       | Connection established but response never arrives | Thread blocked indefinitely without explicit timeout   |
+| **Partial response**   | Connection drops mid-response                     | Corrupted data; parser exceptions                      |
+| **Slow response**      | Response eventually arrives but takes minutes     | Threads accumulate; pool exhaustion; cascading failure |
+| **Protocol violation** | Remote returns unexpected content type or format  | Unhandled exceptions; crash                            |
 
 ### Defense Strategy
 
@@ -61,13 +61,13 @@ Service A (database overloaded)
 
 ### Breaking the Cascade
 
-| Pattern | How It Breaks the Cascade |
-|---------|--------------------------|
-| **Circuit Breaker** | Stops calling the failing service; returns error immediately |
-| **Timeout** | Limits how long a caller waits; frees threads to handle other work |
-| **Bulkhead** | Isolates the failing dependency's impact to a limited set of resources |
-| **Fallback** | Provides degraded but functional response when dependency fails |
-| **Fail Fast** | Rejects requests immediately when system knows it cannot fulfill them |
+| Pattern             | How It Breaks the Cascade                                              |
+| ------------------- | ---------------------------------------------------------------------- |
+| **Circuit Breaker** | Stops calling the failing service; returns error immediately           |
+| **Timeout**         | Limits how long a caller waits; frees threads to handle other work     |
+| **Bulkhead**        | Isolates the failing dependency's impact to a limited set of resources |
+| **Fallback**        | Provides degraded but functional response when dependency fails        |
+| **Fail Fast**       | Rejects requests immediately when system knows it cannot fulfill them  |
 
 ### Prevention Checklist
 
@@ -85,13 +85,13 @@ Users are not gentle with your system. They do not arrive in an orderly queue at
 
 ### Unexpected User Behaviors
 
-| Behavior | Load Impact | Example |
-|----------|------------|---------|
-| **Refresh storms** | Multiplies load when pages are slow | Users hit F5 repeatedly when checkout is slow |
-| **Bot traffic** | Can exceed human traffic by 10-100x | Scrapers, search engines, monitoring tools |
-| **Flash crowds** | Sudden, massive traffic spikes | Hacker News front page, TV mention, viral tweet |
-| **Abandoned sessions** | Resource consumption without completion | Users open carts, leave; sessions consume server memory |
-| **Power users** | Disproportionate resource consumption | One user with 50,000 items in a list; API consumers with no rate limit |
+| Behavior               | Load Impact                             | Example                                                                |
+| ---------------------- | --------------------------------------- | ---------------------------------------------------------------------- |
+| **Refresh storms**     | Multiplies load when pages are slow     | Users hit F5 repeatedly when checkout is slow                          |
+| **Bot traffic**        | Can exceed human traffic by 10-100x     | Scrapers, search engines, monitoring tools                             |
+| **Flash crowds**       | Sudden, massive traffic spikes          | Hacker News front page, TV mention, viral tweet                        |
+| **Abandoned sessions** | Resource consumption without completion | Users open carts, leave; sessions consume server memory                |
+| **Power users**        | Disproportionate resource consumption   | One user with 50,000 items in a list; API consumers with no rate limit |
 
 ### Defense Strategy
 
@@ -109,23 +109,25 @@ Blocked threads are the silent killer. Unlike a crash (which is loud and obvious
 
 ### Common Causes of Blocked Threads
 
-| Cause | How It Blocks | Detection |
-|-------|--------------|-----------|
-| **Missing timeouts** | Thread waits indefinitely for a response | Thread dump shows threads in WAITING/TIMED_WAITING |
-| **Deadlocks** | Two threads each hold a lock the other needs | Thread dump shows circular lock dependencies |
-| **Synchronized access** | All threads queue for a single lock | Throughput drops to single-threaded speed |
-| **DNS resolution** | DNS lookup blocks the calling thread | Threads stuck in `InetAddress.getByName()` |
-| **Log file I/O** | Synchronous logging blocks application threads | Threads stuck in file write; especially during disk pressure |
+| Cause                   | How It Blocks                                  | Detection                                                    |
+| ----------------------- | ---------------------------------------------- | ------------------------------------------------------------ |
+| **Missing timeouts**    | Thread waits indefinitely for a response       | Thread dump shows threads in WAITING/TIMED_WAITING           |
+| **Deadlocks**           | Two threads each hold a lock the other needs   | Thread dump shows circular lock dependencies                 |
+| **Synchronized access** | All threads queue for a single lock            | Throughput drops to single-threaded speed                    |
+| **DNS resolution**      | DNS lookup blocks the calling thread           | Threads stuck in `InetAddress.getByName()`                   |
+| **Log file I/O**        | Synchronous logging blocks application threads | Threads stuck in file write; especially during disk pressure |
 
 ### Detection and Prevention
 
 **Detection:**
+
 - Thread dump analysis (scheduled periodic dumps, not just during incidents)
 - Thread pool utilization metrics (active/idle/max)
 - Request latency distribution (sudden latency spike = possible thread starvation)
 - Health checks that verify thread pool availability
 
 **Prevention:**
+
 - Explicit timeouts on all blocking operations
 - Asynchronous I/O where possible
 - Bounded queues with rejection policies (not unbounded queues that grow forever)
@@ -139,13 +141,13 @@ A self-denial attack is when your own system, marketing, or business operations 
 
 ### Common Self-Denial Scenarios
 
-| Scenario | Mechanism | Prevention |
-|----------|-----------|------------|
-| **Marketing email blast** | 500,000 emails sent simultaneously, 10% click through in 5 minutes | Stagger sends over hours; pre-scale infrastructure |
-| **Coupon code launch** | Viral sharing of limited coupon creates stampede | Queue-based redemption; rate limit per user |
-| **Product launch countdown** | Users refresh at exactly midnight | Serve static page at launch time; queue for access |
-| **Social media viral moment** | CEO's tweet goes viral, floods landing page | CDN caching; static page fallback |
-| **Cron job stampede** | Every server runs cleanup job at midnight | Randomize cron schedules; use distributed job scheduling |
+| Scenario                      | Mechanism                                                          | Prevention                                               |
+| ----------------------------- | ------------------------------------------------------------------ | -------------------------------------------------------- |
+| **Marketing email blast**     | 500,000 emails sent simultaneously, 10% click through in 5 minutes | Stagger sends over hours; pre-scale infrastructure       |
+| **Coupon code launch**        | Viral sharing of limited coupon creates stampede                   | Queue-based redemption; rate limit per user              |
+| **Product launch countdown**  | Users refresh at exactly midnight                                  | Serve static page at launch time; queue for access       |
+| **Social media viral moment** | CEO's tweet goes viral, floods landing page                        | CDN caching; static page fallback                        |
+| **Cron job stampede**         | Every server runs cleanup job at midnight                          | Randomize cron schedules; use distributed job scheduling |
 
 ### Defense Strategy
 
@@ -163,13 +165,13 @@ Patterns that work at small scale break at large scale. A design that performs w
 
 ### Examples of Scaling Effects
 
-| Pattern | Works at Small Scale | Breaks at Large Scale |
-|---------|---------------------|----------------------|
-| **Point-to-point connections** | 5 services = 20 connections | 50 services = 2,450 connections |
-| **Broadcast messages** | 10 subscribers = manageable | 1,000 subscribers = message storm |
-| **Shared database** | 5 services share one DB | 50 services = connection pool exhaustion |
-| **Health check polling** | Load balancer checks 5 servers | Load balancer checks 500 servers = significant traffic |
-| **Distributed locks** | Low contention with few nodes | High contention with many nodes |
+| Pattern                        | Works at Small Scale           | Breaks at Large Scale                                  |
+| ------------------------------ | ------------------------------ | ------------------------------------------------------ |
+| **Point-to-point connections** | 5 services = 20 connections    | 50 services = 2,450 connections                        |
+| **Broadcast messages**         | 10 subscribers = manageable    | 1,000 subscribers = message storm                      |
+| **Shared database**            | 5 services share one DB        | 50 services = connection pool exhaustion               |
+| **Health check polling**       | Load balancer checks 5 servers | Load balancer checks 500 servers = significant traffic |
+| **Distributed locks**          | Low contention with few nodes  | High contention with many nodes                        |
 
 ### Mitigation
 
@@ -207,12 +209,12 @@ A dogpile (also called thundering herd) occurs when many threads or processes si
 
 ### Common Dogpile Scenarios
 
-| Scenario | Mechanism | Impact |
-|----------|-----------|--------|
-| **Cache expiration** | Popular cache key expires; 1,000 threads hit the database simultaneously | Database overwhelmed; slow response; more cache misses |
-| **Service recovery** | Circuit breaker half-opens; all waiting requests flood the recovering service | Service fails again immediately |
-| **Cron overlap** | Slow job still running when next execution triggers | Double resource consumption; data corruption |
-| **Lock release** | Mutex released; all waiting threads resume simultaneously | Resource spike; possible re-contention |
+| Scenario             | Mechanism                                                                     | Impact                                                 |
+| -------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------ |
+| **Cache expiration** | Popular cache key expires; 1,000 threads hit the database simultaneously      | Database overwhelmed; slow response; more cache misses |
+| **Service recovery** | Circuit breaker half-opens; all waiting requests flood the recovering service | Service fails again immediately                        |
+| **Cron overlap**     | Slow job still running when next execution triggers                           | Double resource consumption; data corruption           |
+| **Lock release**     | Mutex released; all waiting threads resume simultaneously                     | Resource spike; possible re-contention                 |
 
 ### Prevention
 
@@ -229,13 +231,13 @@ A fast failure is annoying. A slow failure is catastrophic. When a system respon
 
 ### Why Slow Is Worse Than Down
 
-| Fast Failure | Slow Failure |
-|-------------|-------------|
-| Circuit breaker trips immediately | Circuit breaker does not trip (still getting responses) |
-| Thread released after milliseconds | Thread blocked for seconds or minutes |
-| Error is visible and actionable | Problem is invisible until pool exhaustion |
-| Users see error, retry once, move on | Users see spinner, refresh, multiply load |
-| Affects one request | Blocks a thread, affecting all subsequent requests |
+| Fast Failure                         | Slow Failure                                            |
+| ------------------------------------ | ------------------------------------------------------- |
+| Circuit breaker trips immediately    | Circuit breaker does not trip (still getting responses) |
+| Thread released after milliseconds   | Thread blocked for seconds or minutes                   |
+| Error is visible and actionable      | Problem is invisible until pool exhaustion              |
+| Users see error, retry once, move on | Users see spinner, refresh, multiply load               |
+| Affects one request                  | Blocks a thread, affecting all subsequent requests      |
 
 ### Detection
 
@@ -259,12 +261,12 @@ A query that returns 10 rows in development returns 10 million rows in productio
 
 ### Common Manifestations
 
-| Query Pattern | Development | Production |
-|--------------|-------------|------------|
-| `SELECT * FROM orders WHERE user_id = ?` | 3 orders | 50,000 orders (power user) |
-| `SELECT * FROM events WHERE date > ?` | 100 events | 2 million events (6 months of data) |
-| `SELECT * FROM logs` | 500 rows | Out of memory |
-| API response with nested objects | Small JSON | 200MB JSON response |
+| Query Pattern                            | Development | Production                          |
+| ---------------------------------------- | ----------- | ----------------------------------- |
+| `SELECT * FROM orders WHERE user_id = ?` | 3 orders    | 50,000 orders (power user)          |
+| `SELECT * FROM events WHERE date > ?`    | 100 events  | 2 million events (6 months of data) |
+| `SELECT * FROM logs`                     | 500 rows    | Out of memory                       |
+| API response with nested objects         | Small JSON  | 200MB JSON response                 |
 
 ### Prevention
 

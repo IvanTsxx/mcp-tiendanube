@@ -2,12 +2,12 @@
 
 Chaos engineering is the discipline of experimenting on a system in order to build confidence in its ability to withstand turbulent conditions in production. It is not about breaking things for fun -- it is a rigorous, scientific approach to discovering weaknesses before they cause outages.
 
-> **Safety note:** This reference describes chaos engineering *concepts and planning patterns*. All failure injection experiments must be performed by authorized engineers using dedicated chaos tooling (e.g., Gremlin, Litmus, AWS Fault Injection Simulator) with proper approvals, blast radius controls, monitoring, and rollback plans. Commands shown are for reference only -- never run them without authorization and safeguards.
+> **Safety note:** This reference describes chaos engineering _concepts and planning patterns_. All failure injection experiments must be performed by authorized engineers using dedicated chaos tooling (e.g., Gremlin, Litmus, AWS Fault Injection Simulator) with proper approvals, blast radius controls, monitoring, and rollback plans. Commands shown are for reference only -- never run them without authorization and safeguards.
 
 The fundamental insight is simple: you cannot know how your system handles failure until it actually fails. Waiting for production incidents to discover weaknesses is reactive and expensive. Chaos engineering is proactive and controlled.
 
-
 ## Table of Contents
+
 1. [Principles of Chaos Engineering](#principles-of-chaos-engineering)
 2. [Chaos Experiment Design](#chaos-experiment-design)
 3. [Failure Injection Techniques](#failure-injection-techniques)
@@ -25,15 +25,16 @@ Before you can detect abnormal behavior, you must define what normal looks like.
 
 **Good steady state definitions:**
 
-| Metric Type | Steady State Definition | Example |
-|-------------|----------------------|---------|
+| Metric Type         | Steady State Definition                 | Example                                  |
+| ------------------- | --------------------------------------- | ---------------------------------------- |
 | **Business metric** | Orders per minute within expected range | 100-150 orders/min during business hours |
-| **Error rate** | Below defined threshold | < 0.1% 5xx errors |
-| **Latency** | Within SLO bounds | p99 latency < 500ms |
-| **Throughput** | Within expected range | 1000-2000 RPS |
-| **Availability** | All critical paths responding | Health checks green on all services |
+| **Error rate**      | Below defined threshold                 | < 0.1% 5xx errors                        |
+| **Latency**         | Within SLO bounds                       | p99 latency < 500ms                      |
+| **Throughput**      | Within expected range                   | 1000-2000 RPS                            |
+| **Availability**    | All critical paths responding           | Health checks green on all services      |
 
 **Bad steady state definitions:**
+
 - "The system is working" (not measurable)
 - "No alerts firing" (absence of evidence is not evidence of absence)
 - "CPU below 80%" (cause-based, not symptom-based)
@@ -43,6 +44,7 @@ Before you can detect abnormal behavior, you must define what normal looks like.
 Every chaos experiment starts with a hypothesis: a prediction about what will happen when you inject a specific failure.
 
 **Hypothesis format:**
+
 ```
 "We believe that when [failure condition], the system will [expected behavior],
 as measured by [steady state metric] remaining within [acceptable bounds]."
@@ -50,12 +52,12 @@ as measured by [steady state metric] remaining within [acceptable bounds]."
 
 **Example hypotheses:**
 
-| Failure | Hypothesis | Metric |
-|---------|-----------|--------|
-| Terminate one API instance (via chaos tooling) | System continues serving traffic with no user-visible errors | Error rate stays < 0.1% |
-| Add 500ms latency to database (via chaos tooling) | Response time degrades but stays within SLO; circuit breaker does not trip | p99 < 2s; no circuit breaker events |
-| Payment service returns 503 (via fault injection proxy) | Checkout shows graceful error; other features unaffected | Non-checkout error rate unchanged |
-| Disk at 95% capacity (via chaos tooling) | Log rotation triggers; alerts fire; no service disruption | Disk drops below 90% within 10 minutes |
+| Failure                                                 | Hypothesis                                                                 | Metric                                 |
+| ------------------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------- |
+| Terminate one API instance (via chaos tooling)          | System continues serving traffic with no user-visible errors               | Error rate stays < 0.1%                |
+| Add 500ms latency to database (via chaos tooling)       | Response time degrades but stays within SLO; circuit breaker does not trip | p99 < 2s; no circuit breaker events    |
+| Payment service returns 503 (via fault injection proxy) | Checkout shows graceful error; other features unaffected                   | Non-checkout error rate unchanged      |
+| Disk at 95% capacity (via chaos tooling)                | Log rotation triggers; alerts fire; no service disruption                  | Disk drops below 90% within 10 minutes |
 
 ### 3. Introduce Real-World Failures
 
@@ -63,19 +65,20 @@ Chaos experiments should simulate failures that actually happen in production, n
 
 **Common failure types to simulate (via dedicated chaos tooling):**
 
-| Category | Failures | Tooling Examples |
-|----------|----------|-----------------|
-| **Infrastructure** | Instance crash, disk failure, network partition | Gremlin, Litmus, AWS FIS |
-| **Network** | Latency, packet loss, DNS failure | Toxiproxy, Istio fault injection, tc (traffic control) |
-| **Application** | Memory pressure, CPU saturation, thread contention | stress-ng (controlled), Gremlin resource attacks |
-| **Dependency** | Service unavailable, slow response, corrupt response | Toxiproxy, Envoy fault injection, mock services |
-| **Cloud** | AZ failure, region degradation, API throttling | AWS FIS, GCP Fault Injection, Azure Chaos Studio |
+| Category           | Failures                                             | Tooling Examples                                       |
+| ------------------ | ---------------------------------------------------- | ------------------------------------------------------ |
+| **Infrastructure** | Instance crash, disk failure, network partition      | Gremlin, Litmus, AWS FIS                               |
+| **Network**        | Latency, packet loss, DNS failure                    | Toxiproxy, Istio fault injection, tc (traffic control) |
+| **Application**    | Memory pressure, CPU saturation, thread contention   | stress-ng (controlled), Gremlin resource attacks       |
+| **Dependency**     | Service unavailable, slow response, corrupt response | Toxiproxy, Envoy fault injection, mock services        |
+| **Cloud**          | AZ failure, region degradation, API throttling       | AWS FIS, GCP Fault Injection, Azure Chaos Studio       |
 
 ### 4. Run in Production
 
 Staging environments do not reproduce the complexity of production. They lack real user traffic, real data volumes, real concurrency patterns, and real interactions between services. Chaos experiments in staging build false confidence.
 
 **But safely:**
+
 - Start with non-production, then graduate to production
 - Use the smallest blast radius possible
 - Have an emergency stop mechanism to halt the experiment immediately
@@ -89,12 +92,12 @@ A chaos experiment that runs once proves resilience at one point in time. Automa
 
 **Automation maturity levels:**
 
-| Level | Practice | Confidence |
-|-------|----------|-----------|
-| **Manual** | Engineer runs experiment by hand, observes results | Low -- depends on who runs it and when |
-| **Scripted** | Experiment codified in a script, run on schedule | Medium -- repeatable but requires human analysis |
-| **Automated** | Experiment runs automatically, evaluates steady state, reports results | High -- continuous verification |
-| **Integrated** | Experiments run in CI/CD pipeline; failing experiment blocks deployment | Very high -- resilience is a deployment gate |
+| Level          | Practice                                                                | Confidence                                       |
+| -------------- | ----------------------------------------------------------------------- | ------------------------------------------------ |
+| **Manual**     | Engineer runs experiment by hand, observes results                      | Low -- depends on who runs it and when           |
+| **Scripted**   | Experiment codified in a script, run on schedule                        | Medium -- repeatable but requires human analysis |
+| **Automated**  | Experiment runs automatically, evaluates steady state, reports results  | High -- continuous verification                  |
+| **Integrated** | Experiments run in CI/CD pipeline; failing experiment blocks deployment | Very high -- resilience is a deployment gate     |
 
 ---
 
@@ -141,15 +144,16 @@ Blast radius is the scope of impact if the experiment causes unexpected damage. 
 
 **Blast radius levels:**
 
-| Level | Scope | When to Use |
-|-------|-------|-------------|
-| **Development** | Single developer's environment | First-time experiments, unproven hypotheses |
-| **Staging** | Staging environment | Validating experiment mechanics before production |
-| **Canary** | Small subset of production (1-5%) | First production experiment for a new failure type |
-| **Single AZ** | One availability zone in production | Testing AZ failure resilience |
-| **Full production** | All production traffic | Well-understood experiments that have been run many times |
+| Level               | Scope                               | When to Use                                               |
+| ------------------- | ----------------------------------- | --------------------------------------------------------- |
+| **Development**     | Single developer's environment      | First-time experiments, unproven hypotheses               |
+| **Staging**         | Staging environment                 | Validating experiment mechanics before production         |
+| **Canary**          | Small subset of production (1-5%)   | First production experiment for a new failure type        |
+| **Single AZ**       | One availability zone in production | Testing AZ failure resilience                             |
+| **Full production** | All production traffic              | Well-understood experiments that have been run many times |
 
 **Blast radius controls:**
+
 - **Targeting:** Limit experiment to specific instances, user segments, or traffic percentage
 - **Duration:** Set maximum experiment duration; auto-revert after timeout
 - **Emergency stop:** One-button (or automatic) experiment termination
@@ -162,42 +166,42 @@ Blast radius is the scope of impact if the experiment causes unexpected damage. 
 
 ### Process-Level Failures
 
-| Technique | What It Simulates | Chaos Tooling |
-|-----------|-------------------|--------------|
-| Instance termination | Crash | Gremlin process attack, Kubernetes pod disruption budget, Litmus ChaosEngine |
-| Process freeze | Hang/unresponsive | Gremlin process attack (pause), Litmus pod-cpu-hog |
-| CPU saturation | Compute pressure | Gremlin CPU attack, Litmus cpu-hog, stress-ng (controlled, authorized) |
-| Memory pressure | Memory exhaustion | Gremlin memory attack, Litmus pod-memory-hog |
-| Process flood | Process table exhaustion | Gremlin process attack with controlled parameters |
+| Technique            | What It Simulates        | Chaos Tooling                                                                |
+| -------------------- | ------------------------ | ---------------------------------------------------------------------------- |
+| Instance termination | Crash                    | Gremlin process attack, Kubernetes pod disruption budget, Litmus ChaosEngine |
+| Process freeze       | Hang/unresponsive        | Gremlin process attack (pause), Litmus pod-cpu-hog                           |
+| CPU saturation       | Compute pressure         | Gremlin CPU attack, Litmus cpu-hog, stress-ng (controlled, authorized)       |
+| Memory pressure      | Memory exhaustion        | Gremlin memory attack, Litmus pod-memory-hog                                 |
+| Process flood        | Process table exhaustion | Gremlin process attack with controlled parameters                            |
 
 ### Network-Level Failures
 
-| Technique | What It Simulates | Chaos Tooling |
-|-----------|-------------------|--------------|
-| Latency injection | Slow network | Toxiproxy, Gremlin latency attack, Istio fault injection |
-| Packet loss | Unreliable network | Gremlin packet loss attack, Toxiproxy, tc netem (authorized) |
-| Network partition | Network split | Gremlin blackhole attack, Litmus pod-network-partition |
-| DNS failure | DNS outage | Gremlin DNS attack, Litmus pod-dns-error |
-| Bandwidth limit | Constrained network | Toxiproxy bandwidth limit, Gremlin bandwidth attack |
+| Technique         | What It Simulates   | Chaos Tooling                                                |
+| ----------------- | ------------------- | ------------------------------------------------------------ |
+| Latency injection | Slow network        | Toxiproxy, Gremlin latency attack, Istio fault injection     |
+| Packet loss       | Unreliable network  | Gremlin packet loss attack, Toxiproxy, tc netem (authorized) |
+| Network partition | Network split       | Gremlin blackhole attack, Litmus pod-network-partition       |
+| DNS failure       | DNS outage          | Gremlin DNS attack, Litmus pod-dns-error                     |
+| Bandwidth limit   | Constrained network | Toxiproxy bandwidth limit, Gremlin bandwidth attack          |
 
 ### Dependency-Level Failures
 
-| Technique | What It Simulates | Chaos Tooling |
-|-----------|-------------------|--------------|
-| Error injection proxy | Downstream errors | Toxiproxy, Envoy fault injection |
-| Latency injection | Slow dependency | Toxiproxy, Istio fault injection |
-| Connection limit | Pool exhaustion | Toxiproxy connection limit, Gremlin blackhole |
-| Response corruption | Data integrity issues | Custom fault injection proxy |
-| Certificate expiration | TLS failures | Expired test certificate in staging |
+| Technique              | What It Simulates     | Chaos Tooling                                 |
+| ---------------------- | --------------------- | --------------------------------------------- |
+| Error injection proxy  | Downstream errors     | Toxiproxy, Envoy fault injection              |
+| Latency injection      | Slow dependency       | Toxiproxy, Istio fault injection              |
+| Connection limit       | Pool exhaustion       | Toxiproxy connection limit, Gremlin blackhole |
+| Response corruption    | Data integrity issues | Custom fault injection proxy                  |
+| Certificate expiration | TLS failures          | Expired test certificate in staging           |
 
 ### Disk-Level Failures
 
-| Technique | What It Simulates | Chaos Tooling |
-|-----------|-------------------|--------------|
-| Disk pressure | Disk full | Gremlin disk attack, Litmus disk-fill |
-| Slow I/O | Storage degradation | Gremlin IO attack, dm-delay (authorized) |
-| Read-only filesystem | Mount failure | Gremlin disk attack (read-only mode) |
-| Data corruption | Integrity issues | Controlled corruption of test data in staging |
+| Technique            | What It Simulates   | Chaos Tooling                                 |
+| -------------------- | ------------------- | --------------------------------------------- |
+| Disk pressure        | Disk full           | Gremlin disk attack, Litmus disk-fill         |
+| Slow I/O             | Storage degradation | Gremlin IO attack, dm-delay (authorized)      |
+| Read-only filesystem | Mount failure       | Gremlin disk attack (read-only mode)          |
+| Data corruption      | Integrity issues    | Controlled corruption of test data in staging |
 
 ---
 
@@ -207,13 +211,13 @@ Netflix pioneered chaos engineering with Chaos Monkey, which randomly terminates
 
 ### The Netflix Chaos Engineering Stack
 
-| Tool | What It Does | Scope |
-|------|-------------|-------|
-| **Chaos Monkey** | Terminates random instances (automated, authorized) | Single instance |
-| **Chaos Kong** | Simulates entire region failure | Region |
-| **Latency Monkey** | Injects network latency | Network |
-| **Conformity Monkey** | Finds instances not following best practices | Compliance |
-| **Chaos Automation Platform (ChAP)** | Runs automated experiments with steady state comparison | Full stack |
+| Tool                                 | What It Does                                            | Scope           |
+| ------------------------------------ | ------------------------------------------------------- | --------------- |
+| **Chaos Monkey**                     | Terminates random instances (automated, authorized)     | Single instance |
+| **Chaos Kong**                       | Simulates entire region failure                         | Region          |
+| **Latency Monkey**                   | Injects network latency                                 | Network         |
+| **Conformity Monkey**                | Finds instances not following best practices            | Compliance      |
+| **Chaos Automation Platform (ChAP)** | Runs automated experiments with steady state comparison | Full stack      |
 
 ### Key Lessons from Netflix
 
@@ -231,24 +235,24 @@ A GameDay is a scheduled exercise where a team practices responding to a realist
 
 ### GameDay Structure
 
-| Phase | Duration | Activities |
-|-------|----------|-----------|
-| **Preparation** | 1-2 weeks before | Define scenario, brief participants, set up monitoring |
-| **Pre-game** | 30 minutes | Verify steady state, confirm all participants are ready |
-| **Execution** | 1-3 hours | Inject failure, observe team response, take notes |
-| **Post-game** | 1 hour | Debrief, identify what worked and what did not |
-| **Follow-up** | 1-2 weeks after | File action items, track remediation, schedule next GameDay |
+| Phase           | Duration         | Activities                                                  |
+| --------------- | ---------------- | ----------------------------------------------------------- |
+| **Preparation** | 1-2 weeks before | Define scenario, brief participants, set up monitoring      |
+| **Pre-game**    | 30 minutes       | Verify steady state, confirm all participants are ready     |
+| **Execution**   | 1-3 hours        | Inject failure, observe team response, take notes           |
+| **Post-game**   | 1 hour           | Debrief, identify what worked and what did not              |
+| **Follow-up**   | 1-2 weeks after  | File action items, track remediation, schedule next GameDay |
 
 ### GameDay Scenarios
 
-| Scenario | Complexity | What It Tests |
-|----------|-----------|---------------|
-| Terminate a single instance | Low | Auto-healing, health checks, load balancing |
-| Simulate database failover | Medium | Connection handling, read replica routing, data consistency |
-| Full AZ failure | High | Multi-AZ architecture, DNS failover, stateful service recovery |
-| Dependency outage (payment provider) | Medium | Circuit breakers, fallback behavior, user communication |
-| Security incident (compromised credentials) | High | Credential rotation, access logging, incident response process |
-| Data corruption | High | Backup restoration, data validation, recovery time |
+| Scenario                                    | Complexity | What It Tests                                                  |
+| ------------------------------------------- | ---------- | -------------------------------------------------------------- |
+| Terminate a single instance                 | Low        | Auto-healing, health checks, load balancing                    |
+| Simulate database failover                  | Medium     | Connection handling, read replica routing, data consistency    |
+| Full AZ failure                             | High       | Multi-AZ architecture, DNS failover, stateful service recovery |
+| Dependency outage (payment provider)        | Medium     | Circuit breakers, fallback behavior, user communication        |
+| Security incident (compromised credentials) | High       | Credential rotation, access logging, incident response process |
+| Data corruption                             | High       | Backup restoration, data validation, recovery time             |
 
 ### GameDay Ground Rules
 
@@ -291,13 +295,13 @@ Each successful chaos experiment increases confidence that the system will survi
 
 ### Maturity Model
 
-| Level | Practice | Organization |
-|-------|----------|-------------|
-| **Level 0: Reactive** | No chaos engineering; learn from production incidents | Firefighting culture |
-| **Level 1: Exploratory** | Manual, ad-hoc experiments; individual teams | Curious early adopters |
-| **Level 2: Systematic** | Regular GameDays; documented experiments; shared learnings | Engineering-wide practice |
-| **Level 3: Automated** | Continuous automated experiments; integrated into CI/CD | Platform team provides tooling |
-| **Level 4: Cultural** | Chaos engineering is expected for all services; opt-out requires justification | Resilience is a core engineering value |
+| Level                    | Practice                                                                       | Organization                           |
+| ------------------------ | ------------------------------------------------------------------------------ | -------------------------------------- |
+| **Level 0: Reactive**    | No chaos engineering; learn from production incidents                          | Firefighting culture                   |
+| **Level 1: Exploratory** | Manual, ad-hoc experiments; individual teams                                   | Curious early adopters                 |
+| **Level 2: Systematic**  | Regular GameDays; documented experiments; shared learnings                     | Engineering-wide practice              |
+| **Level 3: Automated**   | Continuous automated experiments; integrated into CI/CD                        | Platform team provides tooling         |
+| **Level 4: Cultural**    | Chaos engineering is expected for all services; opt-out requires justification | Resilience is a core engineering value |
 
 ### Getting Started
 
@@ -314,19 +318,20 @@ If you have never done chaos engineering, start here:
 
 ### Common Objections and Responses
 
-| Objection | Response |
-|-----------|---------|
-| "We can't break production on purpose!" | You are already breaking production accidentally. Chaos engineering lets you do it on your terms, when you are prepared. |
-| "Our system isn't resilient enough for chaos" | That is exactly why you need chaos engineering -- to find and fix the weaknesses. Start small. |
-| "We don't have time for this" | You have time for incident response, post-mortems, and customer apologies. Chaos engineering reduces all three. |
-| "What if we cause an outage?" | Start with minimal blast radius in staging. Terminate one process. If that causes an outage, you have learned something invaluable. |
-| "Management won't approve this" | Frame it as risk reduction, not risk creation. Show the cost of recent outages vs. the cost of preventive experiments. |
+| Objection                                     | Response                                                                                                                            |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| "We can't break production on purpose!"       | You are already breaking production accidentally. Chaos engineering lets you do it on your terms, when you are prepared.            |
+| "Our system isn't resilient enough for chaos" | That is exactly why you need chaos engineering -- to find and fix the weaknesses. Start small.                                      |
+| "We don't have time for this"                 | You have time for incident response, post-mortems, and customer apologies. Chaos engineering reduces all three.                     |
+| "What if we cause an outage?"                 | Start with minimal blast radius in staging. Terminate one process. If that causes an outage, you have learned something invaluable. |
+| "Management won't approve this"               | Frame it as risk reduction, not risk creation. Show the cost of recent outages vs. the cost of preventive experiments.              |
 
 ### Anti-Fragility
 
 The ultimate goal of chaos engineering is not just resilience (surviving failure) but anti-fragility (getting stronger from failure). A system is anti-fragile when each failure makes it more resistant to future failures.
 
 **How chaos engineering builds anti-fragility:**
+
 - Each experiment reveals a weakness
 - Each fix removes that weakness permanently
 - Each automated experiment continuously verifies the fix

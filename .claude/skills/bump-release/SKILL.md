@@ -1,5 +1,5 @@
 ---
-argument-hint: '[version] [--beta] [--dry-run]'
+argument-hint: "[version] [--beta] [--dry-run]"
 disable-model-invocation: false
 effort: high
 name: bump-release
@@ -46,21 +46,17 @@ Support for both regular and beta releases.
 5. **Check version** - Get current version from `package.json`
 
 6. **Bump version** - If `version` argument provided, use it directly. Otherwise, if unchanged since last release, increment per Semantic Versioning rules:
-
    - **For regular releases**:
-
      - **PATCH** (x.x.X) - Bug fixes, documentation updates
      - **MINOR** (x.X.x) - New features, backward-compatible changes
      - **MAJOR** (X.x.x) - Breaking changes
 
    - **For beta releases** (`--beta` flag):
-
      - If current version has no beta suffix: Add `-beta.1` to the version
      - If current version already has beta suffix: Increment beta number (e.g., `-beta.1` → `-beta.2`)
      - If moving from beta to release: Remove beta suffix and use the base version
 
    - **When unsure** — If the changes are ambiguous (e.g., a new feature that may also break consumers, or a mix of fixes and features), use `AskUserQuestion` to let the user decide the semver level:
-
      - header: "Version"
      - question: "Changes include both `<summary>`. Which release level?"
      - options: list the plausible semver levels with their resulting version (e.g., "1.3.0 (minor)", "2.0.0 (major)")
@@ -69,7 +65,6 @@ Support for both regular and beta releases.
      Use the user's choice and skip step 7
 
 7. **Confirm version** - When the version was confidently inferred (no explicit `version` argument), use `AskUserQuestion` to confirm before proceeding:
-
    - header: "Version"
    - question: "Release `<current>` → `<inferred>`?"
    - options:

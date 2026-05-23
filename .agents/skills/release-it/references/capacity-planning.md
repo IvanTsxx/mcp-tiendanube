@@ -8,19 +8,20 @@ Not all performance tests are equal. Each type answers a different question.
 
 ### Test Types
 
-| Test Type | Question It Answers | Duration | Load Profile |
-|-----------|-------------------|----------|-------------|
-| **Load test** | Can the system handle expected peak traffic? | 30-60 minutes | Ramp to expected peak, hold steady |
-| **Stress test** | Where does the system break? | Until failure | Ramp beyond expected peak until degradation or failure |
-| **Soak test** | Does the system degrade over time? | 24-72 hours | Sustained load at 70-80% of capacity |
-| **Spike test** | How does the system handle sudden bursts? | 15-30 minutes | Sudden jump from baseline to peak, then back |
-| **Scalability test** | Does adding resources improve throughput linearly? | Variable | Measure throughput at different resource levels |
+| Test Type            | Question It Answers                                | Duration      | Load Profile                                           |
+| -------------------- | -------------------------------------------------- | ------------- | ------------------------------------------------------ |
+| **Load test**        | Can the system handle expected peak traffic?       | 30-60 minutes | Ramp to expected peak, hold steady                     |
+| **Stress test**      | Where does the system break?                       | Until failure | Ramp beyond expected peak until degradation or failure |
+| **Soak test**        | Does the system degrade over time?                 | 24-72 hours   | Sustained load at 70-80% of capacity                   |
+| **Spike test**       | How does the system handle sudden bursts?          | 15-30 minutes | Sudden jump from baseline to peak, then back           |
+| **Scalability test** | Does adding resources improve throughput linearly? | Variable      | Measure throughput at different resource levels        |
 
 ### Load Test Design
 
 A good load test simulates real user behavior, not synthetic happy paths.
 
 **Essential elements:**
+
 - **Realistic user journeys:** Mix of browse, search, add to cart, checkout -- not just one endpoint
 - **Think time:** Users do not fire requests as fast as possible; include realistic pauses between actions
 - **Data variation:** Different users, different products, different search terms -- not the same request repeated
@@ -33,6 +34,7 @@ A good load test simulates real user behavior, not synthetic happy paths.
 The goal is to find the breaking point -- not to prove the system works under normal load.
 
 **Key principles:**
+
 - Increase load incrementally (e.g., 10% every 5 minutes) until you observe degradation
 - Monitor all resources: CPU, memory, disk I/O, network, thread pools, connection pools, queue depths
 - Record the exact load level when each metric crosses its threshold
@@ -45,16 +47,17 @@ Soak tests reveal problems that only manifest over time.
 
 **What soak tests catch:**
 
-| Problem | Mechanism | Detection |
-|---------|-----------|-----------|
-| **Memory leaks** | Gradual memory growth from unreleased objects | Memory usage trends upward over hours |
-| **Connection leaks** | Connections borrowed from pool but never returned | Pool exhaustion after hours of operation |
-| **File handle leaks** | Files opened but never closed | "Too many open files" errors after prolonged operation |
-| **Log file growth** | Disk fills over extended operation | Disk utilization climbs throughout test |
-| **Cache bloat** | Cache grows without eviction under sustained load | Memory or disk consumption increases monotonically |
-| **Database bloat** | Temp tables, uncommitted transactions accumulate | Database performance degrades over test duration |
+| Problem               | Mechanism                                         | Detection                                              |
+| --------------------- | ------------------------------------------------- | ------------------------------------------------------ |
+| **Memory leaks**      | Gradual memory growth from unreleased objects     | Memory usage trends upward over hours                  |
+| **Connection leaks**  | Connections borrowed from pool but never returned | Pool exhaustion after hours of operation               |
+| **File handle leaks** | Files opened but never closed                     | "Too many open files" errors after prolonged operation |
+| **Log file growth**   | Disk fills over extended operation                | Disk utilization climbs throughout test                |
+| **Cache bloat**       | Cache grows without eviction under sustained load | Memory or disk consumption increases monotonically     |
+| **Database bloat**    | Temp tables, uncommitted transactions accumulate  | Database performance degrades over test duration       |
 
 **Soak test requirements:**
+
 - Run at 70-80% of measured capacity (not full stress -- you are testing endurance, not peak)
 - Duration: minimum 24 hours, ideally 72 hours
 - Monitor resource trends, not just snapshots -- a flat graph is healthy, a rising trend is a leak
@@ -71,11 +74,13 @@ Resource pools -- thread pools, connection pools, object pools -- are finite and
 The most common question: "How many connections do I need?"
 
 **Formula:**
+
 ```
 pool_size = peak_concurrent_requests × avg_hold_time / avg_request_time
 ```
 
 **But in practice:**
+
 - Measure actual concurrent active connections under peak load
 - Set pool size to measured p99 concurrency + 20-30% headroom
 - Set a maximum that protects the downstream resource (databases have their own connection limits)
@@ -84,25 +89,25 @@ pool_size = peak_concurrent_requests × avg_hold_time / avg_request_time
 
 ### Connection Pool Configuration
 
-| Parameter | Purpose | Typical Value |
-|-----------|---------|---------------|
-| **Minimum pool size** | Connections maintained even when idle | 5-10 |
-| **Maximum pool size** | Hard upper limit on connections | Based on measurement |
-| **Checkout timeout** | How long to wait for a connection from the pool | 500ms - 2s |
-| **Idle timeout** | How long an unused connection stays in the pool | 5-10 minutes |
-| **Max lifetime** | Maximum age of a connection before forced recycling | 30-60 minutes |
-| **Validation query** | Query to verify connection health before use | `SELECT 1` |
-| **Validation interval** | How often idle connections are validated | 30-60 seconds |
+| Parameter               | Purpose                                             | Typical Value        |
+| ----------------------- | --------------------------------------------------- | -------------------- |
+| **Minimum pool size**   | Connections maintained even when idle               | 5-10                 |
+| **Maximum pool size**   | Hard upper limit on connections                     | Based on measurement |
+| **Checkout timeout**    | How long to wait for a connection from the pool     | 500ms - 2s           |
+| **Idle timeout**        | How long an unused connection stays in the pool     | 5-10 minutes         |
+| **Max lifetime**        | Maximum age of a connection before forced recycling | 30-60 minutes        |
+| **Validation query**    | Query to verify connection health before use        | `SELECT 1`           |
+| **Validation interval** | How often idle connections are validated            | 30-60 seconds        |
 
 ### Connection Pool Anti-Patterns
 
-| Anti-Pattern | Problem | Fix |
-|-------------|---------|-----|
-| **No checkout timeout** | Thread waits forever for a connection | Set checkout timeout to 1-2 seconds |
-| **No max lifetime** | Stale connections cause intermittent errors | Recycle connections every 30-60 minutes |
+| Anti-Pattern                       | Problem                                                        | Fix                                                               |
+| ---------------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------------- |
+| **No checkout timeout**            | Thread waits forever for a connection                          | Set checkout timeout to 1-2 seconds                               |
+| **No max lifetime**                | Stale connections cause intermittent errors                    | Recycle connections every 30-60 minutes                           |
 | **Pool size = DB max connections** | Leaves no connections for admin, monitoring, or other services | Pool size = (DB max - reserved) / number of application instances |
-| **Ignoring connection leaks** | Pool slowly drains until exhaustion | Monitor borrowed-vs-returned; log leaked connections |
-| **Default pool size** | Either wastes resources or causes starvation | Size based on measured concurrency |
+| **Ignoring connection leaks**      | Pool slowly drains until exhaustion                            | Monitor borrowed-vs-returned; log leaked connections              |
+| **Default pool size**              | Either wastes resources or causes starvation                   | Size based on measured concurrency                                |
 
 ---
 
@@ -113,38 +118,41 @@ Thread pools control the concurrency of your application. Getting them right is 
 ### Thread Pool Sizing
 
 **CPU-bound workloads:**
+
 ```
 threads = number_of_cores
 ```
 
 **I/O-bound workloads (most web applications):**
+
 ```
 threads = number_of_cores × (1 + wait_time / service_time)
 ```
 
 Example: 8 cores, requests spend 80% of time waiting on I/O:
+
 ```
 threads = 8 × (1 + 80/20) = 8 × 5 = 40 threads
 ```
 
 ### Thread Pool Configuration
 
-| Parameter | Purpose | Consideration |
-|-----------|---------|---------------|
-| **Core pool size** | Threads always kept alive | Handles normal load without thread creation overhead |
-| **Maximum pool size** | Hard upper limit | Handles burst load; too high causes context-switching overhead |
-| **Queue capacity** | Work queue between core and max | Bounded queue with rejection policy; never unbounded |
-| **Keep-alive time** | How long excess threads survive when idle | 30-60 seconds; balances responsiveness and resource usage |
-| **Rejection policy** | What happens when pool and queue are both full | Reject immediately (fail fast) or caller-runs (back-pressure) |
+| Parameter             | Purpose                                        | Consideration                                                  |
+| --------------------- | ---------------------------------------------- | -------------------------------------------------------------- |
+| **Core pool size**    | Threads always kept alive                      | Handles normal load without thread creation overhead           |
+| **Maximum pool size** | Hard upper limit                               | Handles burst load; too high causes context-switching overhead |
+| **Queue capacity**    | Work queue between core and max                | Bounded queue with rejection policy; never unbounded           |
+| **Keep-alive time**   | How long excess threads survive when idle      | 30-60 seconds; balances responsiveness and resource usage      |
+| **Rejection policy**  | What happens when pool and queue are both full | Reject immediately (fail fast) or caller-runs (back-pressure)  |
 
 ### Thread Pool Anti-Patterns
 
-| Anti-Pattern | Problem | Fix |
-|-------------|---------|-----|
-| **Unbounded queue** | Memory grows until OOM; latency climbs invisibly | Use bounded queue; fail fast when full |
-| **Single shared pool** | One slow operation starves all others | Separate pools per workload type |
-| **Too many threads** | Context-switching overhead exceeds throughput gain | Measure throughput at different pool sizes; find the plateau |
-| **No monitoring** | Thread starvation goes undetected until outage | Monitor active/idle/queued counts; alert on pool saturation |
+| Anti-Pattern           | Problem                                            | Fix                                                          |
+| ---------------------- | -------------------------------------------------- | ------------------------------------------------------------ |
+| **Unbounded queue**    | Memory grows until OOM; latency climbs invisibly   | Use bounded queue; fail fast when full                       |
+| **Single shared pool** | One slow operation starves all others              | Separate pools per workload type                             |
+| **Too many threads**   | Context-switching overhead exceeds throughput gain | Measure throughput at different pool sizes; find the plateau |
+| **No monitoring**      | Thread starvation goes undetected until outage     | Monitor active/idle/queued counts; alert on pool saturation  |
 
 ---
 
@@ -159,6 +167,7 @@ C(N) = N / (1 + σ(N-1) + κN(N-1))
 ```
 
 Where:
+
 - **N** = number of processors/servers/threads
 - **σ** (sigma) = contention parameter: fraction of work that must be serialized
 - **κ** (kappa) = coherence parameter: cost of keeping shared state consistent
@@ -166,10 +175,10 @@ Where:
 
 ### Key Insights
 
-| Parameter | Effect | Example |
-|-----------|--------|---------|
-| **σ = 0, κ = 0** | Linear scalability (ideal but impossible) | Adding 10 servers = 10x throughput |
-| **σ > 0, κ = 0** | Amdahl's Law: diminishing returns | Shared lock limits parallelism |
+| Parameter        | Effect                                                        | Example                                                      |
+| ---------------- | ------------------------------------------------------------- | ------------------------------------------------------------ |
+| **σ = 0, κ = 0** | Linear scalability (ideal but impossible)                     | Adding 10 servers = 10x throughput                           |
+| **σ > 0, κ = 0** | Amdahl's Law: diminishing returns                             | Shared lock limits parallelism                               |
 | **σ > 0, κ > 0** | Retrograde scalability: adding resources decreases throughput | Distributed cache coherence overhead exceeds throughput gain |
 
 ### Practical Application
@@ -189,20 +198,21 @@ A capacity model documents the relationship between load, resources, and perform
 
 For each service, document:
 
-| Dimension | Current Value | Limit | Action at Limit |
-|-----------|--------------|-------|-----------------|
-| **Requests/sec** | 500 RPS | 2,000 RPS | Scale horizontally |
-| **CPU** | 40% avg, 70% peak | 80% sustained | Add instances |
-| **Memory** | 2.5 GB / 4 GB | 3.5 GB | Increase instance size or optimize |
-| **DB connections** | 30 active / 50 max | 45 active | Increase pool or add read replicas |
-| **Disk I/O** | 200 IOPS | 3,000 IOPS (provisioned) | Upgrade storage tier |
-| **Network** | 500 Mbps | 10 Gbps | Unlikely bottleneck |
+| Dimension          | Current Value      | Limit                    | Action at Limit                    |
+| ------------------ | ------------------ | ------------------------ | ---------------------------------- |
+| **Requests/sec**   | 500 RPS            | 2,000 RPS                | Scale horizontally                 |
+| **CPU**            | 40% avg, 70% peak  | 80% sustained            | Add instances                      |
+| **Memory**         | 2.5 GB / 4 GB      | 3.5 GB                   | Increase instance size or optimize |
+| **DB connections** | 30 active / 50 max | 45 active                | Increase pool or add read replicas |
+| **Disk I/O**       | 200 IOPS           | 3,000 IOPS (provisioned) | Upgrade storage tier               |
+| **Network**        | 500 Mbps           | 10 Gbps                  | Unlikely bottleneck                |
 
 ### Bottleneck Resource
 
 Every service has a bottleneck resource -- the resource that runs out first as load increases. The capacity of the service equals the capacity of its bottleneck.
 
 **Finding the bottleneck:**
+
 1. Run a stress test, increasing load gradually
 2. Monitor all resources simultaneously
 3. The first resource to hit its limit is the bottleneck
@@ -210,13 +220,13 @@ Every service has a bottleneck resource -- the resource that runs out first as l
 
 **Common bottlenecks by service type:**
 
-| Service Type | Typical Bottleneck |
-|-------------|-------------------|
-| API services | Thread pool or connection pool |
-| Data-heavy services | Database connections or query throughput |
-| Compute-heavy services | CPU |
-| File processing | Disk I/O or memory |
-| Real-time services | Network bandwidth or connection count |
+| Service Type           | Typical Bottleneck                       |
+| ---------------------- | ---------------------------------------- |
+| API services           | Thread pool or connection pool           |
+| Data-heavy services    | Database connections or query throughput |
+| Compute-heavy services | CPU                                      |
+| File processing        | Disk I/O or memory                       |
+| Real-time services     | Network bandwidth or connection count    |
 
 ---
 
@@ -225,6 +235,7 @@ Every service has a bottleneck resource -- the resource that runs out first as l
 ### Myth 1: "The Cloud Is Infinitely Scalable"
 
 Reality:
+
 - Auto-scaling has lag time (1-5 minutes to provision and start new instances)
 - Cold starts add latency to the first requests on new instances
 - Cloud providers have account-level limits (instance count, API rate limits)
@@ -234,6 +245,7 @@ Reality:
 ### Myth 2: "We'll Just Add More Servers"
 
 Reality:
+
 - Adding servers only helps if the bottleneck is CPU or memory on the application tier
 - If the bottleneck is the database, adding application servers makes it worse (more connections, more load on the same database)
 - Network hops, serialization overhead, and coordination costs increase with more servers
@@ -242,6 +254,7 @@ Reality:
 ### Myth 3: "Our Load Tests Pass, So We're Fine"
 
 Reality:
+
 - Load tests with synthetic data miss hot spots in production data
 - Load tests rarely simulate realistic user behavior (think times, session patterns, edge cases)
 - Load test environments rarely match production topology, network latency, or data volume
@@ -251,6 +264,7 @@ Reality:
 ### Myth 4: "We Don't Need Capacity Planning -- We Have Auto-Scaling"
 
 Reality:
+
 - Auto-scaling reacts to load after it arrives; capacity planning anticipates load before it arrives
 - Auto-scaling cannot protect against instant traffic spikes (Black Friday, viral events)
 - Auto-scaling policies themselves need testing -- misconfigured policies can scale in the wrong direction or oscillate

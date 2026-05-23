@@ -2,8 +2,8 @@
 name: Bun
 description: Use when building JavaScript/TypeScript applications, running scripts, installing packages, bundling code, or testing. Bun is a complete toolkit replacing Node.js, npm, and bundlers with a single fast binary.
 metadata:
-    mintlify-proj: bun
-    version: "1.0"
+  mintlify-proj: bun
+  version: "1.0"
 ---
 
 # Bun Skill
@@ -13,6 +13,7 @@ metadata:
 Bun is an all-in-one JavaScript/TypeScript toolkit shipped as a single executable. It replaces Node.js (runtime), npm/yarn/pnpm (package manager), Jest (test runner), and esbuild/webpack (bundler) with a unified, fast alternative. The runtime is written in Zig and powered by JavaScriptCore.
 
 **Key files and commands:**
+
 - `bunfig.toml` — Configuration file (optional, zero-config by default)
 - `bun run <script>` — Execute scripts from package.json or files
 - `bun install` — Install dependencies (25x faster than npm)
@@ -43,17 +44,17 @@ Reach for this skill when:
 
 ### Essential Commands
 
-| Command | Purpose |
-|---------|---------|
-| `bun run <file.ts>` | Execute TypeScript/JSX file directly |
-| `bun run <script>` | Run script from package.json |
-| `bun install` | Install all dependencies (creates bun.lock) |
-| `bun add <pkg>` | Add a package to dependencies |
-| `bun remove <pkg>` | Remove a package |
-| `bun build ./src/index.ts --outdir ./dist` | Bundle code for production |
-| `bun test` | Run all test files matching `*.test.ts` patterns |
-| `bun test --watch` | Run tests in watch mode |
-| `bunx <pkg>` | Execute a package without installing globally |
+| Command                                    | Purpose                                          |
+| ------------------------------------------ | ------------------------------------------------ |
+| `bun run <file.ts>`                        | Execute TypeScript/JSX file directly             |
+| `bun run <script>`                         | Run script from package.json                     |
+| `bun install`                              | Install all dependencies (creates bun.lock)      |
+| `bun add <pkg>`                            | Add a package to dependencies                    |
+| `bun remove <pkg>`                         | Remove a package                                 |
+| `bun build ./src/index.ts --outdir ./dist` | Bundle code for production                       |
+| `bun test`                                 | Run all test files matching `*.test.ts` patterns |
+| `bun test --watch`                         | Run tests in watch mode                          |
+| `bunx <pkg>`                               | Execute a package without installing globally    |
 
 ### File Conventions
 
@@ -90,31 +91,31 @@ bun = true        # alias node to bun
 
 ### When to Use Bun vs Node.js
 
-| Scenario | Use Bun | Use Node.js |
-|----------|---------|-----------|
-| New project, greenfield | ✓ | — |
-| Existing Node.js project | ✓ (drop-in replacement) | — |
-| Requires specific Node.js version | — | ✓ |
-| Need exact npm compatibility | — | ✓ |
-| Building CLI tools | ✓ | — |
-| Full-stack TypeScript apps | ✓ | — |
+| Scenario                          | Use Bun                 | Use Node.js |
+| --------------------------------- | ----------------------- | ----------- |
+| New project, greenfield           | ✓                       | —           |
+| Existing Node.js project          | ✓ (drop-in replacement) | —           |
+| Requires specific Node.js version | —                       | ✓           |
+| Need exact npm compatibility      | —                       | ✓           |
+| Building CLI tools                | ✓                       | —           |
+| Full-stack TypeScript apps        | ✓                       | —           |
 
 ### Bundler: `bun build` vs `bun run`
 
-| Task | Use `bun build` | Use `bun run` |
-|------|-----------------|---------------|
-| Production deployment | ✓ | — |
-| Optimize bundle size | ✓ | — |
-| Code splitting | ✓ | — |
-| Development/testing | — | ✓ |
-| Single-file executable | ✓ | — |
-| Watch mode development | — | ✓ |
+| Task                   | Use `bun build` | Use `bun run` |
+| ---------------------- | --------------- | ------------- |
+| Production deployment  | ✓               | —             |
+| Optimize bundle size   | ✓               | —             |
+| Code splitting         | ✓               | —             |
+| Development/testing    | —               | ✓             |
+| Single-file executable | ✓               | —             |
+| Watch mode development | —               | ✓             |
 
 ### Package Manager: Linker Strategy
 
-| Strategy | Use When |
-|----------|----------|
-| `hoisted` | Single-package projects, traditional npm behavior |
+| Strategy   | Use When                                                                |
+| ---------- | ----------------------------------------------------------------------- |
+| `hoisted`  | Single-package projects, traditional npm behavior                       |
 | `isolated` | Monorepos, strict dependency isolation, preventing phantom dependencies |
 
 ---
@@ -249,6 +250,7 @@ Before submitting work with Bun:
 **Comprehensive navigation:** https://bun.com/docs/llms.txt
 
 **Critical pages:**
+
 1. [Runtime Overview](https://bun.com/docs/runtime) — Core APIs, file I/O, HTTP servers
 2. [Package Manager](https://bun.com/docs/pm/cli/install) — Install, add, workspaces, lockfile
 3. [Bundler](https://bun.com/docs/bundler) — Build, splitting, plugins, executables
