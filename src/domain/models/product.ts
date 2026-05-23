@@ -40,8 +40,20 @@ export const ProductSchema = z.object({
 });
 export type Product = z.infer<typeof ProductSchema>;
 
-// Partial product for updates (all fields optional)
-export const ProductUpdateSchema = ProductSchema.partial();
+// Partial product for updates (all fields optional, no default values to prevent overwriting missing fields)
+export const ProductUpdateSchema = z.object({
+  description: z.string().optional(),
+  id: ProductIdSchema.optional(),
+  images: z.array(ImageSchema).optional(),
+  name: z.string().min(1, "Product name is required").optional(),
+  price: z
+    .string()
+    .regex(/^\d+\.\d{2}$/, "Price must be in format XX.XX")
+    .optional(),
+  stock: z.number().int().min(0, "Stock cannot be negative").optional(),
+  variants: z.array(VariantSchema).optional(),
+  variants_count: z.number().int().min(0).optional(),
+});
 export type ProductUpdate = z.infer<typeof ProductUpdateSchema>;
 
 // Bulk update item schema

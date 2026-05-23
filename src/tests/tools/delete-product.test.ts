@@ -55,8 +55,8 @@ describe("delete-product tool", () => {
       confirm: true,
     } as never);
 
-    expect(result.success).toBe(true);
-    expect(result.deleted as string).toBe("prod-123");
+    expect(result.structuredContent.success).toBe(true);
+    expect(result.structuredContent.deleted as string).toBe("prod-123");
   });
 
   test("tool returns error when confirm is not true", async () => {
@@ -65,8 +65,8 @@ describe("delete-product tool", () => {
       confirm: false,
     } as never);
 
-    expect(result.success).toBe(false);
-    expect(result.error).toContain("confirm: true");
+    expect(result.structuredContent.success).toBe(false);
+    expect(result.structuredContent.error).toContain("confirm: true");
   });
 
   test("schema confirm field requires boolean", () => {

@@ -125,8 +125,7 @@ export function createProductAdapter(
 
     async get(id: string) {
       const response = await adapter.get<TiendanubeProductResponse>(
-        `/products/${id}`,
-        { fields: "**" }
+        `/products/${id}`
       );
       return transformProductResponse(response);
     },

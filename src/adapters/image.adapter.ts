@@ -36,6 +36,33 @@ export interface ImageAdapter {
 }
 
 export function createImageAdapter(adapter: TiendaNubeAdapter): ImageAdapter {
+  async function findProductIdForImage(imageId: string): Promise<string> {
+    let page = 1;
+    while (true) {
+      const response = await adapter.get<any>("/products", {
+        page: String(page),
+        per_page: "50",
+      });
+      const products = Array.isArray(response)
+        ? response
+        : response.products || [];
+      if (products.length === 0) {
+        break;
+      }
+      for (const prod of products) {
+        const images = prod.images || [];
+        if (images.some((img: any) => String(img.id) === imageId)) {
+          return String(prod.id);
+        }
+      }
+      if (products.length < 50) {
+        break;
+      }
+      page += 1;
+    }
+    throw new Error(`Product not found for image ID ${imageId}`);
+  }
+
   return {
     async add(productId: string, imageUrl: string) {
       const response = await adapter.post<TiendanubeImageResponse>(
@@ -46,12 +73,14 @@ export function createImageAdapter(adapter: TiendaNubeAdapter): ImageAdapter {
     },
 
     async remove(imageId: string) {
-      await adapter.delete(`/images/${imageId}`);
+      const productId = await findProductIdForImage(imageId);
+      await adapter.delete(`/products/${productId}/images/${imageId}`);
     },
 
     async reorder(imageId: string, position: number) {
+      const productId = await findProductIdForImage(imageId);
       const response = await adapter.put<TiendanubeImageResponse>(
-        `/images/${imageId}`,
+        `/products/${productId}/images/${imageId}`,
         { position }
       );
       return transformImageResponse(response);

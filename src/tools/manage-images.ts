@@ -48,7 +48,9 @@ export default async function manageImages(params: Params) {
         throw new Error("image_url required for add action");
       }
       const added = await imageService.add(product_id, image_url);
-      return { action: "added", image: added, success: true };
+      return {
+        structuredContent: { action: "added", image: added, success: true },
+      };
     }
 
     case "remove": {
@@ -56,7 +58,9 @@ export default async function manageImages(params: Params) {
         throw new Error("image_id required for remove action");
       }
       await imageService.remove(image_id);
-      return { action: "removed", image_id, success: true };
+      return {
+        structuredContent: { action: "removed", image_id, success: true },
+      };
     }
 
     case "reorder": {
@@ -64,7 +68,13 @@ export default async function manageImages(params: Params) {
         throw new Error("image_id and position required for reorder action");
       }
       const reordered = await imageService.reorder(image_id, position);
-      return { action: "reordered", image: reordered, success: true };
+      return {
+        structuredContent: {
+          action: "reordered",
+          image: reordered,
+          success: true,
+        },
+      };
     }
 
     default: {

@@ -6,6 +6,19 @@ El formato esta basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0
 
 ---
 
+## [0.1.1] - 2026-05-23
+
+### Fixed
+
+- **MCP Tool Return Format**: Wrapped all tool returns (`get-product`, `update-stock`, `update-products`, `manage-variants`, `manage-images`, `delete-product`) in `structuredContent` to comply with the MCP client/framework requirements.
+- **Product Detail API Error (422)**: Fixed `get-product` by removing the unsupported `fields: "**"` query parameter which caused `422 Unprocessable Entity` in TiendaNube API.
+- **Variant Updates/Deletions Route (404)**: Routed variant updates and deletions to `/products/{productId}/variants/{variantId}` (the correct TiendaNube paths) instead of `/variants/{variantId}` by implementing a dynamic product ID lookup.
+- **Image Updates/Deletions Route (404)**: Routed image updates and deletions to `/products/{productId}/images/{imageId}` instead of `/images/{imageId}` using dynamic product ID lookup.
+- **Product Partial Updates Schema**: Redefined `ProductUpdateSchema` without default values to prevent optional fields from defaulting to empty strings/arrays and overriding existing product data during updates.
+- **Unit Tests Coverage**: Updated the test suite to expect `structuredContent` in the assertions of all modified tools, ensuring 100% of the 70 unit tests continue to pass.
+
+---
+
 ## [0.1.0] - 2026-05-23
 
 ### Added

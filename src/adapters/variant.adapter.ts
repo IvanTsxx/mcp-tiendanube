@@ -43,6 +43,33 @@ export interface VariantAdapter {
 export function createVariantAdapter(
   adapter: TiendaNubeAdapter
 ): VariantAdapter {
+  async function findProductIdForVariant(variantId: string): Promise<string> {
+    let page = 1;
+    while (true) {
+      const response = await adapter.get<any>("/products", {
+        page: String(page),
+        per_page: "50",
+      });
+      const products = Array.isArray(response)
+        ? response
+        : response.products || [];
+      if (products.length === 0) {
+        break;
+      }
+      for (const prod of products) {
+        const variants = prod.variants || [];
+        if (variants.some((v: any) => String(v.id) === variantId)) {
+          return String(prod.id);
+        }
+      }
+      if (products.length < 50) {
+        break;
+      }
+      page += 1;
+    }
+    throw new Error(`Product not found for variant ID ${variantId}`);
+  }
+
   return {
     async create(productId: string, variant: VariantInput) {
       const response = await adapter.post<TiendanubeVariantResponse>(
@@ -53,15 +80,17 @@ export function createVariantAdapter(
     },
 
     async delete(variantId: string) {
-      await adapter.delete(`/variants/${variantId}`);
+      const productId = await findProductIdForVariant(variantId);
+      await adapter.delete(`/products/${productId}/variants/${variantId}`);
     },
 
     async update(
       variantId: string,
       body: Partial<{ sku: string; price: string; stock: number }>
     ) {
+      const productId = await findProductIdForVariant(variantId);
       const response = await adapter.put<TiendanubeVariantResponse>(
-        `/variants/${variantId}`,
+        `/products/${productId}/variants/${variantId}`,
         body
       );
       return transformVariantResponse(response);

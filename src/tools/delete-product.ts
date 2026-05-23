@@ -35,16 +35,20 @@ export default async function deleteProduct(params: Params) {
 
   if (confirm !== true) {
     return {
-      error:
-        "Deletion requires confirm: true. Please confirm the deletion before proceeding.",
-      success: false,
+      structuredContent: {
+        error:
+          "Deletion requires confirm: true. Please confirm the deletion before proceeding.",
+        success: false,
+      },
     };
   }
 
   await productService.delete(product_id, true);
 
   return {
-    deleted: product_id,
-    success: true,
+    structuredContent: {
+      deleted: product_id,
+      success: true,
+    },
   };
 }

@@ -28,5 +28,7 @@ export default async function getProduct(params: Params) {
 
   const product = await productService.get(params.id);
 
-  return { product };
+  return {
+    structuredContent: { product },
+  };
 }

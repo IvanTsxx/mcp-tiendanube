@@ -44,7 +44,13 @@ export default async function manageVariants(params: Params) {
         throw new Error("Variant data required for create action");
       }
       const created = await variantService.create(product_id, variant);
-      return { action: "created", success: true, variant: created };
+      return {
+        structuredContent: {
+          action: "created",
+          success: true,
+          variant: created,
+        },
+      };
     }
 
     case "update": {
@@ -52,7 +58,13 @@ export default async function manageVariants(params: Params) {
         throw new Error("variant_id required for update action");
       }
       const updated = await variantService.update(variant_id, variant ?? {});
-      return { action: "updated", success: true, variant: updated };
+      return {
+        structuredContent: {
+          action: "updated",
+          success: true,
+          variant: updated,
+        },
+      };
     }
 
     case "delete": {
@@ -60,7 +72,9 @@ export default async function manageVariants(params: Params) {
         throw new Error("variant_id required for delete action");
       }
       await variantService.delete(variant_id);
-      return { action: "deleted", success: true, variant_id };
+      return {
+        structuredContent: { action: "deleted", success: true, variant_id },
+      };
     }
 
     default: {

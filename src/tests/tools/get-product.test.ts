@@ -85,8 +85,8 @@ describe("get-product tool", () => {
 
     const result = await getProduct({ id: "123" } as never);
 
-    expect(result.product).toBeDefined();
-    expect(result.product.name).toBe("Test Product");
+    expect(result.structuredContent.product).toBeDefined();
+    expect(result.structuredContent.product.name).toBe("Test Product");
   });
 
   test("tool propagates service errors", async () => {

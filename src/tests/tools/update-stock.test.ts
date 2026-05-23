@@ -75,9 +75,9 @@ describe("update-stock tool", () => {
       ],
     });
 
-    expect(result.results).toHaveLength(2);
-    expect(result.summary.total).toBe(2);
-    expect(result.summary.success).toBe(2);
+    expect(result.structuredContent.results).toHaveLength(2);
+    expect(result.structuredContent.summary.total).toBe(2);
+    expect(result.structuredContent.summary.success).toBe(2);
   });
 
   test("tool handles partial failures", async () => {
@@ -95,8 +95,8 @@ describe("update-stock tool", () => {
       ],
     });
 
-    expect(result.summary.success).toBe(1);
-    expect(result.summary.failed).toBe(1);
+    expect(result.structuredContent.summary.success).toBe(1);
+    expect(result.structuredContent.summary.failed).toBe(1);
   });
 
   test("schema requires at least one stock update", () => {

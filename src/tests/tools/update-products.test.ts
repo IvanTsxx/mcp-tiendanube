@@ -76,9 +76,9 @@ describe("update-products tool", () => {
       ],
     } as never);
 
-    expect(result.results).toHaveLength(2);
-    expect(result.summary.total).toBe(2);
-    expect(result.summary.success).toBe(2);
+    expect(result.structuredContent.results).toHaveLength(2);
+    expect(result.structuredContent.summary.total).toBe(2);
+    expect(result.structuredContent.summary.success).toBe(2);
   });
 
   test("schema requires at least one update", () => {

@@ -88,9 +88,9 @@ describe("manage-images tool", () => {
       image_url: "https://example.com/new.jpg",
     } as never);
 
-    expect(result.success).toBe(true);
-    expect(result.action).toBe("added");
-    expect(result.image?.id).toBe("img-123");
+    expect(result.structuredContent.success).toBe(true);
+    expect(result.structuredContent.action).toBe("added");
+    expect(result.structuredContent.image?.id).toBe("img-123");
   });
 
   test("tool removes image when action is remove", async () => {
@@ -100,8 +100,8 @@ describe("manage-images tool", () => {
       image_id: "img-123",
     } as never);
 
-    expect(result.success).toBe(true);
-    expect(result.action).toBe("removed");
+    expect(result.structuredContent.success).toBe(true);
+    expect(result.structuredContent.action).toBe("removed");
   });
 
   test("tool reorders image when action is reorder", async () => {
@@ -120,8 +120,8 @@ describe("manage-images tool", () => {
       position: 2,
     } as never);
 
-    expect(result.success).toBe(true);
-    expect(result.action).toBe("reordered");
+    expect(result.structuredContent.success).toBe(true);
+    expect(result.structuredContent.action).toBe("reordered");
   });
 
   test("tool requires image_url for add action", async () => {

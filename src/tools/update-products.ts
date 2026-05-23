@@ -40,11 +40,13 @@ export default async function updateProducts(params: Params) {
   const failureCount = results.filter((r) => !r.success).length;
 
   return {
-    results,
-    summary: {
-      failed: failureCount,
-      success: successCount,
-      total: results.length,
+    structuredContent: {
+      results,
+      summary: {
+        failed: failureCount,
+        success: successCount,
+        total: results.length,
+      },
     },
   };
 }

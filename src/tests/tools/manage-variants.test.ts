@@ -102,9 +102,9 @@ describe("manage-variants tool", () => {
       variant: { sku: "SKU-NEW", price: "29.99", stock: 10 },
     } as never);
 
-    expect(result.success).toBe(true);
-    expect(result.action).toBe("created");
-    expect(result.variant?.id).toBe("new-123");
+    expect(result.structuredContent.success).toBe(true);
+    expect(result.structuredContent.action).toBe("created");
+    expect(result.structuredContent.variant?.id).toBe("new-123");
   });
 
   test("tool updates variant when action is update", async () => {
@@ -124,8 +124,8 @@ describe("manage-variants tool", () => {
       variant_id: "var-123",
     } as never);
 
-    expect(result.success).toBe(true);
-    expect(result.action).toBe("updated");
+    expect(result.structuredContent.success).toBe(true);
+    expect(result.structuredContent.action).toBe("updated");
   });
 
   test("tool deletes variant when action is delete", async () => {
@@ -135,8 +135,8 @@ describe("manage-variants tool", () => {
       variant_id: "var-123",
     } as never);
 
-    expect(result.success).toBe(true);
-    expect(result.action).toBe("deleted");
+    expect(result.structuredContent.success).toBe(true);
+    expect(result.structuredContent.action).toBe("deleted");
   });
 
   test("tool requires variant_id for update action", async () => {
