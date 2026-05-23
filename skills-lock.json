@@ -18,6 +18,12 @@
       "skillPath": "plugins/documentation-generation/skills/changelog-automation/SKILL.md",
       "computedHash": "b1dbf331730361654b2d50f6750c8bf055e8d3cd454f03496c87e87c5497d27c"
     },
+    "changelog-generator": {
+      "source": "composiohq/awesome-claude-skills",
+      "sourceType": "github",
+      "skillPath": "changelog-generator/SKILL.md",
+      "computedHash": "0facdb5c491a654e3b0f6d300fb8fa14472d811cb715c632dc2862919b277dae"
+    },
     "find-skills": {
       "source": "vercel-labs/skills",
       "sourceType": "github",
