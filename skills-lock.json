@@ -1,10 +1,22 @@
 {
   "version": 1,
   "skills": {
+    "bump-release": {
+      "source": "paulrberg/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/bump-release/SKILL.md",
+      "computedHash": "b4552b064777e524b7dbd5cf81bdc5c3839283d91fc30d294977380cff56b339"
+    },
     "bun": {
       "source": "midudev/autoskills",
       "sourceType": "autoskills-registry",
       "computedHash": "1386ed5490ed278e38312a416c9aa074dbe3849f32ae7f841e4142fef5d4df94"
+    },
+    "changelog-automation": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "skillPath": "plugins/documentation-generation/skills/changelog-automation/SKILL.md",
+      "computedHash": "b1dbf331730361654b2d50f6750c8bf055e8d3cd454f03496c87e87c5497d27c"
     },
     "find-skills": {
       "source": "vercel-labs/skills",
@@ -17,6 +29,12 @@
       "sourceType": "github",
       "skillPath": "skills/mcp-server-design/SKILL.md",
       "computedHash": "ffb9b6f5ab492cf5102d382736205dffe0f5cff959e44f484191917c4d6028ac"
+    },
+    "release-it": {
+      "source": "wondelai/skills",
+      "sourceType": "github",
+      "skillPath": "release-it/SKILL.md",
+      "computedHash": "6b85141ae517711547a653bc84b8996d6b7d06121413a5591a23497cb87efcfd"
     },
     "typescript-advanced-types": {
       "source": "wshobson/agents",
