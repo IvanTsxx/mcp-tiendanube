@@ -112,9 +112,9 @@ describe("list-products tool", () => {
       stock_status: "all",
     });
 
-    expect(result.products).toHaveLength(1);
-    expect(result.products[0].name).toBe("Test Product");
-    expect(result.pagination.total).toBe(1);
+    expect(result.structuredContent.products).toHaveLength(1);
+    expect(result.structuredContent.products[0].name).toBe("Test Product");
+    expect(result.structuredContent.pagination.total).toBe(1);
   });
 
   test("tool accepts optional search parameter", async () => {
@@ -131,7 +131,7 @@ describe("list-products tool", () => {
       stock_status: "all",
     });
 
-    expect(result.products).toEqual([]);
+    expect(result.structuredContent.products).toEqual([]);
   });
 
   test("schema stock_status enum has correct values", () => {
@@ -151,5 +151,18 @@ describe("list-products tool", () => {
   test("schema page has default value", () => {
     const result = schema.page.parse(undefined as never);
     expect(result).toBe(1);
+  });
+
+  test("tool handles undefined or empty parameters gracefully", async () => {
+    mockService = createMockProductService({
+      listResponse: {
+        pagination: { page: 1, per_page: 50, total: 0, total_pages: 0 },
+        products: [],
+      },
+    });
+
+    const result = await listProducts(undefined as any);
+    expect(result.structuredContent.products).toEqual([]);
+    expect(result.structuredContent.pagination.page).toBe(1);
   });
 });

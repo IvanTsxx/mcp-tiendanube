@@ -62,18 +62,44 @@ function transformProductResponse(
   };
 }
 
-function transformListResponse(response: TiendanubeListResponse): {
+function transformListResponse(
+  response: any,
+  requestedParams: { page?: number; per_page?: number } = {}
+): {
   products: Product[];
   pagination: Pagination;
 } {
+  const page = requestedParams.page ?? 1;
+  const per_page = requestedParams.per_page ?? 50;
+
+  if (response && !Array.isArray(response) && response.pagination) {
+    return {
+      pagination: {
+        page: response.pagination.page ?? page,
+        per_page: response.pagination.per_page ?? per_page,
+        total: response.pagination.total ?? 0,
+        total_pages: response.pagination.total_pages ?? 0,
+      },
+      products: (response.products || []).map(transformProductResponse),
+    };
+  }
+
+  const productsArray = Array.isArray(response) ? response : [];
+  const productsCount = productsArray.length;
+  const hasMore = productsCount === per_page;
+  const estimatedTotal = hasMore
+    ? page * per_page + 1
+    : (page - 1) * per_page + productsCount;
+  const estimatedTotalPages = hasMore ? page + 1 : page;
+
   return {
     pagination: {
-      page: response.pagination.page,
-      per_page: response.pagination.per_page,
-      total: response.pagination.total,
-      total_pages: response.pagination.total_pages,
+      page,
+      per_page,
+      total: estimatedTotal,
+      total_pages: estimatedTotalPages,
     },
-    products: response.products.map(transformProductResponse),
+    products: productsArray.map(transformProductResponse),
   };
 }
 
@@ -119,12 +145,12 @@ export function createProductAdapter(
         queryParams.stock = params.stock_status === "in_stock" ? "1" : "0";
       }
 
-      const response = await adapter.get<TiendanubeListResponse>(
-        "/products",
-        queryParams
-      );
+      const response = await adapter.get<any>("/products", queryParams);
 
-      return transformListResponse(response);
+      return transformListResponse(response, {
+        page: params.page,
+        per_page: params.per_page,
+      });
     },
 
     async update(id: string, updates: ProductUpdate) {

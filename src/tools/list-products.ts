@@ -27,10 +27,10 @@ export const metadata: ToolMetadata = {
 type Schema = typeof schema;
 type Params = InferSchema<Schema>;
 
-export default async function listProducts(params: Params) {
+export default async function listProducts(params: Params = {} as Params) {
   const productService = createProductServiceInstance();
 
-  const { stock_status, search, page } = params;
+  const { stock_status, search, page } = params || {};
 
   const result = await productService.list({
     page,
@@ -39,8 +39,12 @@ export default async function listProducts(params: Params) {
     stock_status,
   });
 
+  console.log(result);
+
   return {
-    pagination: result.pagination,
-    products: result.products,
+    structuredContent: {
+      pagination: result.pagination,
+      products: result.products,
+    },
   };
 }
