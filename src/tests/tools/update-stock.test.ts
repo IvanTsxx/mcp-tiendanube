@@ -1,6 +1,10 @@
 import { test, expect, describe } from "bun:test";
 
-import updateStock, { metadata, schema, setStockService } from "./update-stock";
+import updateStock, {
+  metadata,
+  schema,
+  setStockService,
+} from "../../tools/update-stock";
 
 function createMockStockService(
   overrides: {

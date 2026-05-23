@@ -1,13 +1,13 @@
 import { test, expect } from "bun:test";
 
+import { createAdapter } from "../../adapters/tiendanube.adapter";
 import {
   UnauthorizedError,
   NotFoundError,
   RateLimitError,
   ApiUnavailableError,
   TiendaNubeError,
-} from "../domain/errors";
-import { createAdapter } from "./tiendanube.adapter";
+} from "../../domain/errors";
 
 // Note: These tests focus on adapter interface and error mapping logic.
 // Bun.test doesn't have a built-in fetch mock, so we test the pure functions

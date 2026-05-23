@@ -1,6 +1,10 @@
 import { test, expect, describe } from "bun:test";
 
-import getProduct, { metadata, schema, setProductService } from "./get-product";
+import getProduct, {
+  metadata,
+  schema,
+  setProductService,
+} from "../../tools/get-product";
 
 function createMockProductService(overrides: {
   getResponse?: {
@@ -64,7 +68,7 @@ describe("get-product tool", () => {
 
     setProductService(mockService as never);
 
-    const result = await getProduct({ id: "123" });
+    const result = await getProduct({ id: "123" } as never);
 
     expect(result.product).toBeDefined();
     expect(result.product.name).toBe("Test Product");
@@ -73,7 +77,7 @@ describe("get-product tool", () => {
   test("tool throws error when service not configured", async () => {
     setProductService(null as never);
 
-    await expect(getProduct({ id: "123" })).rejects.toThrow(
+    await expect(getProduct({ id: "123" } as never)).rejects.toThrow(
       "ProductService not configured"
     );
   });
@@ -85,6 +89,8 @@ describe("get-product tool", () => {
 
     setProductService(mockService as never);
 
-    await expect(getProduct({ id: "999" })).rejects.toThrow("Not found");
+    await expect(getProduct({ id: "999" } as never)).rejects.toThrow(
+      "Not found"
+    );
   });
 });

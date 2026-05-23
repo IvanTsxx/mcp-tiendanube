@@ -4,7 +4,7 @@ import updateProducts, {
   metadata,
   schema,
   setProductService,
-} from "./update-products";
+} from "../../tools/update-products";
 
 function createMockProductService(overrides: {
   updateBulkResponse?: {
@@ -59,7 +59,7 @@ describe("update-products tool", () => {
         { id: "123", updates: { name: "Updated Product" } },
         { id: "456", updates: { price: "39.99" } },
       ],
-    });
+    } as never);
 
     expect(result.results).toHaveLength(2);
     expect(result.summary.total).toBe(2);
@@ -72,7 +72,7 @@ describe("update-products tool", () => {
     await expect(
       updateProducts({
         updates: [{ id: "123", updates: { name: "Test" } }],
-      })
+      } as never)
     ).rejects.toThrow("ProductService not configured");
   });
 

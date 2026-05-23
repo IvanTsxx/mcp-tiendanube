@@ -1,8 +1,8 @@
 import { test, expect } from "bun:test";
 
-import type { Pagination } from "../domain/models/pagination";
-import type { Product, ProductUpdate } from "../domain/models/product";
-import type { ProductAdapter } from "./product.adapter";
+import type { ProductAdapter } from "../../adapters/product.adapter";
+import type { Pagination } from "../../domain/models/pagination";
+import type { Product, ProductUpdate } from "../../domain/models/product";
 
 // Create a mock adapter for testing ProductAdapter interface
 function createMockAdapter(
@@ -51,7 +51,7 @@ function createMockAdapter(
       }
       return {} as T;
     },
-    post: async <T>(_path: string, _body: unknown): Promise<T> => ({}),
+    post: async <T>(_path: string, _body: unknown): Promise<T> => ({}) as T,
     put: async <T>(path: string, _body: unknown): Promise<T> => {
       if (path.startsWith("/products/")) {
         if (overrides.updateError) {
@@ -89,7 +89,7 @@ interface TiendanubeListResponse {
 // Test that createProductAdapter returns correct interface
 test("ProductAdapter has list, get, update, delete methods", () => {
   const mockAdapter = createMockAdapter();
-  const { createProductAdapter } = require("./product.adapter");
+  const { createProductAdapter } = require("../../adapters/product.adapter");
   const productAdapter = createProductAdapter(mockAdapter as any);
 
   expect(typeof productAdapter.list).toBe("function");
@@ -124,7 +124,7 @@ test("ProductAdapter.list returns products and pagination", async () => {
   };
 
   const mockAdapter = createMockAdapter({ listResponse: mockResponse });
-  const { createProductAdapter } = require("./product.adapter");
+  const { createProductAdapter } = require("../../adapters/product.adapter");
   const productAdapter = createProductAdapter(mockAdapter as any);
 
   const result = await productAdapter.list();
@@ -155,7 +155,7 @@ test("ProductAdapter.get returns full product with variants and images", async (
   };
 
   const mockAdapter = createMockAdapter({ getResponse: mockProduct });
-  const { createProductAdapter } = require("./product.adapter");
+  const { createProductAdapter } = require("../../adapters/product.adapter");
   const productAdapter = createProductAdapter(mockAdapter as any);
 
   const result = await productAdapter.get("123");
@@ -180,7 +180,7 @@ test("ProductAdapter transforms numeric IDs to string branded types", async () =
   };
 
   const mockAdapter = createMockAdapter({ getResponse: mockProduct });
-  const { createProductAdapter } = require("./product.adapter");
+  const { createProductAdapter } = require("../../adapters/product.adapter");
   const productAdapter = createProductAdapter(mockAdapter as any);
 
   const result = await productAdapter.get("456");

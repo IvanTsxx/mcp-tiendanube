@@ -12,7 +12,7 @@ test("TokenConfig parses valid env vars", async () => {
   process.env.TIENDANUBE_API_BASE_URL = "https://api.tiendanube.com/v1";
 
   // Import the module fresh
-  const { TokenConfigSchema } = await import("./env");
+  const { TokenConfigSchema } = await import("../../config/env");
 
   const result = TokenConfigSchema.safeParse({
     TIENDANUBE_ACCESS_TOKEN: process.env.TIENDANUBE_ACCESS_TOKEN,
@@ -38,7 +38,7 @@ test("TokenConfig rejects missing access token", async () => {
   process.env.TIENDANUBE_STORE_ID = "store-456";
   process.env.TIENDANUBE_API_BASE_URL = "https://api.tiendanube.com/v1";
 
-  const { TokenConfigSchema } = await import("./env");
+  const { TokenConfigSchema } = await import("../../config/env");
 
   const result = TokenConfigSchema.safeParse({
     TIENDANUBE_ACCESS_TOKEN: "",
@@ -56,7 +56,7 @@ test("TokenConfig rejects missing store id", async () => {
   process.env.TIENDANUBE_STORE_ID = "";
   process.env.TIENDANUBE_API_BASE_URL = "https://api.tiendanube.com/v1";
 
-  const { TokenConfigSchema } = await import("./env");
+  const { TokenConfigSchema } = await import("../../config/env");
 
   const result = TokenConfigSchema.safeParse({
     TIENDANUBE_ACCESS_TOKEN: "test-token",
@@ -74,7 +74,7 @@ test("TokenConfig rejects invalid URL", async () => {
   process.env.TIENDANUBE_STORE_ID = "store-456";
   process.env.TIENDANUBE_API_BASE_URL = "not-a-valid-url";
 
-  const { TokenConfigSchema } = await import("./env");
+  const { TokenConfigSchema } = await import("../../config/env");
 
   const result = TokenConfigSchema.safeParse({
     TIENDANUBE_ACCESS_TOKEN: "test-token",

@@ -7,7 +7,7 @@ import {
   ProductIdSchema,
   VariantIdSchema,
   ImageIdSchema,
-} from "./product";
+} from "../../domain/models/product";
 
 test("ProductSchema parses valid product with branded IDs", () => {
   const validProduct = {

@@ -4,7 +4,7 @@ import deleteProduct, {
   metadata,
   schema,
   setProductService,
-} from "./delete-product";
+} from "../../tools/delete-product";
 
 function createMockProductService(
   overrides: {
@@ -40,10 +40,10 @@ describe("delete-product tool", () => {
     const result = await deleteProduct({
       product_id: "prod-123",
       confirm: true,
-    });
+    } as never);
 
     expect(result.success).toBe(true);
-    expect(result.deleted).toBe("prod-123");
+    expect(result.deleted as string).toBe("prod-123");
   });
 
   test("tool returns error when confirm is not true", async () => {
@@ -54,7 +54,7 @@ describe("delete-product tool", () => {
     const result = await deleteProduct({
       product_id: "prod-123",
       confirm: false,
-    });
+    } as never);
 
     expect(result.success).toBe(false);
     expect(result.error).toContain("confirm: true");
@@ -64,10 +64,7 @@ describe("delete-product tool", () => {
     setProductService(null as never);
 
     await expect(
-      deleteProduct({
-        product_id: "prod-123",
-        confirm: true,
-      })
+      deleteProduct({ product_id: "prod-123", confirm: true } as never)
     ).rejects.toThrow("ProductService not configured");
   });
 

@@ -4,7 +4,7 @@ import manageVariants, {
   metadata,
   schema,
   setVariantService,
-} from "./manage-variants";
+} from "../../tools/manage-variants";
 
 function createMockVariantService(
   overrides: {
@@ -85,11 +85,11 @@ describe("manage-variants tool", () => {
       action: "create",
       product_id: "prod-123",
       variant: { sku: "SKU-NEW", price: "29.99", stock: 10 },
-    });
+    } as never);
 
     expect(result.success).toBe(true);
     expect(result.action).toBe("created");
-    expect(result.variant.id).toBe("new-123");
+    expect(result.variant?.id).toBe("new-123");
   });
 
   test("tool updates variant when action is update", async () => {
@@ -109,7 +109,7 @@ describe("manage-variants tool", () => {
       product_id: "prod-123",
       variant: { price: "39.99" },
       variant_id: "var-123",
-    });
+    } as never);
 
     expect(result.success).toBe(true);
     expect(result.action).toBe("updated");
@@ -124,7 +124,7 @@ describe("manage-variants tool", () => {
       action: "delete",
       product_id: "prod-123",
       variant_id: "var-123",
-    });
+    } as never);
 
     expect(result.success).toBe(true);
     expect(result.action).toBe("deleted");
@@ -138,7 +138,7 @@ describe("manage-variants tool", () => {
         action: "create",
         product_id: "prod-123",
         variant: { sku: "TEST" },
-      })
+      } as never)
     ).rejects.toThrow("VariantService not configured");
   });
 
@@ -152,7 +152,7 @@ describe("manage-variants tool", () => {
         action: "update",
         product_id: "prod-123",
         variant: { price: "19.99" },
-      })
+      } as never)
     ).rejects.toThrow("variant_id required");
   });
 });

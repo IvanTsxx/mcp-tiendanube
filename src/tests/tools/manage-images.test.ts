@@ -4,7 +4,7 @@ import manageImages, {
   metadata,
   schema,
   setImageService,
-} from "./manage-images";
+} from "../../tools/manage-images";
 
 function createMockImageService(
   overrides: {
@@ -71,11 +71,11 @@ describe("manage-images tool", () => {
       action: "add",
       product_id: "prod-123",
       image_url: "https://example.com/new.jpg",
-    });
+    } as never);
 
     expect(result.success).toBe(true);
     expect(result.action).toBe("added");
-    expect(result.image.id).toBe("img-123");
+    expect(result.image?.id).toBe("img-123");
   });
 
   test("tool removes image when action is remove", async () => {
@@ -87,7 +87,7 @@ describe("manage-images tool", () => {
       action: "remove",
       product_id: "prod-123",
       image_id: "img-123",
-    });
+    } as never);
 
     expect(result.success).toBe(true);
     expect(result.action).toBe("removed");
@@ -109,7 +109,7 @@ describe("manage-images tool", () => {
       product_id: "prod-123",
       image_id: "img-123",
       position: 2,
-    });
+    } as never);
 
     expect(result.success).toBe(true);
     expect(result.action).toBe("reordered");
@@ -123,7 +123,7 @@ describe("manage-images tool", () => {
         action: "add",
         product_id: "prod-123",
         image_url: "https://example.com/test.jpg",
-      })
+      } as never)
     ).rejects.toThrow("ImageService not configured");
   });
 
@@ -136,7 +136,7 @@ describe("manage-images tool", () => {
       manageImages({
         action: "add",
         product_id: "prod-123",
-      })
+      } as never)
     ).rejects.toThrow("image_url required");
   });
 });

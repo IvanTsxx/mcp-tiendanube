@@ -7,7 +7,7 @@ import {
   ValidationError,
   RateLimitError,
   ApiUnavailableError,
-} from "./errors";
+} from "../../domain/errors";
 
 test("TiendaNubeError has code and httpStatus", () => {
   const error = new TiendaNubeError("Test error", "TEST_CODE", 500);

@@ -4,7 +4,7 @@ import listProducts, {
   schema,
   metadata,
   setProductService,
-} from "./list-products";
+} from "../../tools/list-products";
 
 // Mock product service for testing
 function createMockProductService(
@@ -150,7 +150,7 @@ describe("list-products tool", () => {
   });
 
   test("schema page has default value", () => {
-    const result = schema.page.parse();
+    const result = schema.page.parse(undefined as never);
     expect(result).toBe(1);
   });
 });
