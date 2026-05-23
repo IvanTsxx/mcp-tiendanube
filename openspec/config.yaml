@@ -1,0 +1,39 @@
+schema: spec-driven
+
+context: |
+  Tech stack: Bun, TypeScript (strict), xmcp v0.6.10, Zod v4
+  Architecture: xmcp MCP server with prompts/tools/resources paths
+  Testing: bun:test, coverage available via --coverage
+  Quality: Ultracite (oxlint + oxfmt), strict mode
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+  specs:
+    - Use Given/When/Then for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+  design:
+    - Include sequence diagrams for complex flows
+    - Document architecture decisions with rationale
+  tasks:
+    - Group by phase, use hierarchical numbering
+    - Keep tasks completable in one session
+  apply:
+    - Follow existing xmcp path conventions
+    - tdd: true
+    - test_command: "bun test"
+  verify:
+    test_command: "bun test"
+    build_command: "bun run build"
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive deltas
+
+testing:
+  strict_tdd: true
+  runner: bun
+  unit: true
+  integration: false
+  e2e: false
+  coverage: true
+  coverage_command: "bun test --coverage"

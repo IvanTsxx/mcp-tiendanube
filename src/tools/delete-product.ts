@@ -1,0 +1,63 @@
+import type { ToolMetadata, InferSchema } from "xmcp";
+import { z } from "zod";
+
+import { ProductIdSchema } from "../domain/models/product";
+
+export const schema = {
+  confirm: z
+    .boolean()
+    .describe(
+      "Must be true to confirm deletion. Without confirmation, the operation is rejected."
+    ),
+  product_id: ProductIdSchema.describe("The product ID to delete"),
+};
+
+export const metadata: ToolMetadata = {
+  annotations: {
+    destructiveHint: true,
+    idempotentHint: false,
+    readOnlyHint: false,
+    title: "Delete Product",
+  },
+  description:
+    "Delete a product from the store. Requires confirm: true to prevent accidental deletions. This action is destructive and cannot be undone.",
+  name: "delete-product",
+};
+
+type Schema = typeof schema;
+type Params = InferSchema<Schema>;
+
+interface ProductServiceInterface {
+  delete(id: string, confirm: true): Promise<void>;
+}
+
+let productService: ProductServiceInterface | null = null;
+
+export function setProductService(service: ProductServiceInterface): void {
+  productService = service;
+}
+
+export default async function deleteProduct(params: Params) {
+  if (!productService) {
+    throw new Error(
+      "ProductService not configured. Call setProductService() first."
+    );
+  }
+
+  const { product_id, confirm } = params;
+
+  if (confirm !== true) {
+    return {
+      error:
+        "Deletion requires confirm: true. Please confirm the deletion before proceeding.",
+      success: false,
+    };
+  }
+
+  await productService.delete(product_id, true);
+
+  return {
+    deleted: product_id,
+    success: true,
+  };
+}

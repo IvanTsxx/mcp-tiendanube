@@ -1,0 +1,30 @@
+schema: spec-driven
+change: mcp-tiendanube-roadmap-prd
+status: exploring
+
+phases:
+  explore:
+    status: completed
+    artifact: openspec/changes/mcp-tiendanube-roadmap-prd/exploration.md
+  propose:
+    status: pending
+  spec:
+    status: pending
+  design:
+    status: pending
+  tasks:
+    status: pending
+  apply:
+    status: pending
+  verify:
+    status: pending
+  archive:
+    status: pending
+
+context:
+  tech_stack: "Bun, TypeScript (strict), xmcp v0.6.10, Zod v4, Ultracite"
+  domain: "MCP server for Tiendanube e-commerce API"
+  mvp_scope: "Product operations (list, get, update, variants, images, stock, delete)"
+
+delivery_strategy: ask-on-risk
+review_budget_lines: 400
