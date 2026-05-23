@@ -111,6 +111,7 @@ export interface ProductAdapter {
     stock_status?: "all" | "in_stock" | "out_of_stock";
   }): Promise<{ products: Product[]; pagination: Pagination }>;
   get(id: string): Promise<Product>;
+  create(product: any): Promise<Product>;
   update(id: string, updates: ProductUpdate): Promise<Product>;
   delete(id: string): Promise<void>;
 }
@@ -119,6 +120,13 @@ export function createProductAdapter(
   adapter: TiendaNubeAdapter
 ): ProductAdapter {
   return {
+    async create(product: any) {
+      const response = await adapter.post<TiendanubeProductResponse>(
+        "/products",
+        product
+      );
+      return transformProductResponse(response);
+    },
     async delete(id: string) {
       await adapter.delete(`/products/${id}`);
     },

@@ -17,6 +17,11 @@ El formato esta basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0
 - **Product Partial Updates Schema**: Redefined `ProductUpdateSchema` without default values to prevent optional fields from defaulting to empty strings/arrays and overriding existing product data during updates.
 - **Unit Tests Coverage**: Updated the test suite to expect `structuredContent` in the assertions of all modified tools, ensuring 100% of the 70 unit tests continue to pass.
 
+### Added
+
+- **Create Product Tool**: Implemented `create-product` MCP tool, supporting atomic creation of products along with variation attributes, variants, and images in a single API request payload.
+- **Unit Tests**: Added 5 new unit tests in `create-product.test.ts` to cover simple and complex product creation.
+
 ---
 
 ## [0.1.0] - 2026-05-23

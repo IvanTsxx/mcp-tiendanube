@@ -73,3 +73,55 @@ export const VariantInputSchema = z.object({
   stock: z.number().int().min(0, "Stock cannot be negative").optional(),
 });
 export type VariantInput = z.infer<typeof VariantInputSchema>;
+
+// Product create input (for atomic creation)
+export const ProductCreateSchema = z.object({
+  name: z
+    .union([z.string(), z.record(z.string())])
+    .describe("Product name (string or translated object)"),
+  description: z
+    .union([z.string(), z.record(z.string())])
+    .optional()
+    .describe("Product description"),
+  price: z
+    .string()
+    .regex(/^\d+\.\d{2}$/, "Price must be in format XX.XX")
+    .optional()
+    .describe("Price for products without variation"),
+  stock: z
+    .number()
+    .int()
+    .min(0)
+    .optional()
+    .describe("Stock for products without variation"),
+  sku: z.string().optional().describe("SKU for products without variation"),
+  attributes: z
+    .array(z.union([z.string(), z.record(z.string())]))
+    .optional()
+    .describe("Variation attributes (e.g. ['Size'])"),
+  variants: z
+    .array(
+      z.object({
+        values: z
+          .array(z.union([z.string(), z.record(z.string())]))
+          .describe("Attribute values (e.g. ['S'])"),
+        price: z
+          .string()
+          .regex(/^\d+\.\d{2}$/, "Price must be in format XX.XX"),
+        stock: z.number().int().min(0),
+        sku: z.string().optional(),
+      })
+    )
+    .optional()
+    .describe("Product variations"),
+  images: z
+    .array(
+      z.object({
+        src: z.string().url("Image source must be a valid URL"),
+        position: z.number().int().min(1).optional(),
+      })
+    )
+    .optional()
+    .describe("Product images"),
+});
+export type ProductCreate = z.infer<typeof ProductCreateSchema>;

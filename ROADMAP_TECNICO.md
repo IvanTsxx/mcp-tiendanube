@@ -18,9 +18,9 @@ Construir un servidor MCP que permita a los LLMs gestionar catalogos de producto
 
 | Metrica                    | Valor  | Umbral |
 | -------------------------- | ------ | ------ |
-| Herramientas implementadas | 7      | 7      |
-| Archivos de test           | 12     | —      |
-| Tests ejecutados           | 70     | —      |
+| Herramientas implementadas | 8      | 8      |
+| Archivos de test           | 13     | —      |
+| Tests ejecutados           | 75     | —      |
 | Tests fallidos             | 0      | 0      |
 | Cobertura de funciones     | 89.69% | >=80%  |
 | Cobertura de lineas        | 91.02% | >=80%  |
@@ -29,15 +29,16 @@ Construir un servidor MCP que permita a los LLMs gestionar catalogos de producto
 
 ### Herramientas entregadas
 
-| Herramienta       | Accion                                    | Endpoints API                  |
-| ----------------- | ----------------------------------------- | ------------------------------ |
-| `list-products`   | Listado paginado con filtros              | `GET /products`                |
-| `get-product`     | Detalle completo con variantes e imagenes | `GET /products/{id}`           |
-| `update-products` | Actualizacion masiva de atributos         | `PUT /products/{id}`           |
-| `manage-variants` | Crear, actualizar o eliminar variantes    | `POST/PUT/DELETE /products/{product_id}/variants` |
-| `manage-images`   | Agregar, eliminar o reordenar imagenes    | `POST/DELETE/PUT /products/{product_id}/images`   |
+| Herramienta       | Accion                                    | Endpoints API                                      |
+| ----------------- | ----------------------------------------- | -------------------------------------------------- |
+| `list-products`   | Listado paginado con filtros              | `GET /products`                                    |
+| `get-product`     | Detalle completo con variantes e imagenes | `GET /products/{id}`                               |
+| `create-product`  | Crear producto con variantes e imagenes   | `POST /products`                                   |
+| `update-products` | Actualizacion masiva de atributos         | `PUT /products/{id}`                               |
+| `manage-variants` | Crear, actualizar o eliminar variantes    | `POST/PUT/DELETE /products/{product_id}/variants`  |
+| `manage-images`   | Agregar, eliminar o reordenar imagenes    | `POST/DELETE/PUT /products/{product_id}/images`    |
 | `update-stock`    | Actualizar niveles de stock por variante  | `PUT /products/{product_id}/variants/{variant_id}` |
-| `delete-product`  | Eliminar producto con confirmacion        | `DELETE /products/{id}`        |
+| `delete-product`  | Eliminar producto con confirmacion        | `DELETE /products/{id}`                            |
 
 ### Arquitectura implementada
 
@@ -118,11 +119,11 @@ src/
 
 **Criterios de finalizacion (todos cumplidos)**:
 
-- [x] 70 tests pasan con 0 fallos.
+- [x] 75 tests pasan con 0 fallos.
 - [x] Cobertura de lineas >=91%.
 - [x] `bun run build` genera artefactos sin errores.
 - [x] `bun x ultracite check` reporta 0 errores en `src/`.
-- [x] Las 7 herramientas responden correctamente a entradas validas.
+- [x] Las 8 herramientas responden correctamente a entradas validas.
 - [x] Las herramientas retornan mensajes de error amigables ante fallos de la API.
 
 **Dependencias**: xmcp 0.6.10, Zod v4, Bun runtime, API v1 de Tiendanube.

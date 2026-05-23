@@ -97,17 +97,18 @@ El objetivo es eliminar la curva de aprendizaje de la API REST de Tiendanube par
 
 ## 6. Alcance del MVP
 
-El MVP (version 0.1.0) incluye exactamente 7 herramientas MCP, todas orientadas al dominio de productos:
+El MVP (version 0.1.1) incluye exactamente 8 herramientas MCP, todas orientadas al dominio de productos:
 
-| #   | Herramienta       | Tipo      | Descripcion                                           |
-| --- | ----------------- | --------- | ----------------------------------------------------- |
-| 1   | `list-products`   | Lectura   | Listado paginado con filtros por stock y busqueda     |
-| 2   | `get-product`     | Lectura   | Detalle completo incluyendo variantes e imagenes      |
-| 3   | `update-products` | Escritura | Actualizacion masiva de atributos de producto         |
-| 4   | `manage-variants` | Escritura | Crear, actualizar o eliminar variantes de un producto |
-| 5   | `manage-images`   | Escritura | Agregar, eliminar o reordenar imagenes de producto    |
-| 6   | `update-stock`    | Escritura | Actualizar niveles de stock de variantes en batch     |
-| 7   | `delete-product`  | Escritura | Eliminar producto con confirmacion obligatoria        |
+| #   | Herramienta       | Tipo      | Descripcion                                                  |
+| --- | ----------------- | --------- | ------------------------------------------------------------ |
+| 1   | `list-products`   | Lectura   | Listado paginado con filtros por stock y busqueda            |
+| 2   | `get-product`     | Lectura   | Detalle completo incluyendo variantes e imagenes             |
+| 3   | `create-product`  | Escritura | Crear nuevo producto con variantes e imagenes en una llamada |
+| 4   | `update-products` | Escritura | Actualizacion masiva de atributos de producto                |
+| 5   | `manage-variants` | Escritura | Crear, actualizar o eliminar variantes de un producto        |
+| 6   | `manage-images`   | Escritura | Agregar, eliminar o reordenar imagenes de producto           |
+| 7   | `update-stock`    | Escritura | Actualizar niveles de stock de variantes en batch            |
+| 8   | `delete-product`  | Escritura | Eliminar producto con confirmacion obligatoria               |
 
 **Lo que el MVP NO incluye**:
 

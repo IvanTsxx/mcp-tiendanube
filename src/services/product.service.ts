@@ -15,6 +15,7 @@ export interface ProductService {
     stock_status?: "all" | "in_stock" | "out_of_stock";
   }): Promise<{ products: Product[]; pagination: Pagination }>;
   get(id: string): Promise<Product>;
+  create(product: any): Promise<Product>;
   updateBulk(
     items: BulkUpdateItem[]
   ): Promise<
@@ -25,6 +26,9 @@ export interface ProductService {
 
 export function createProductService(adapter: ProductAdapter): ProductService {
   return {
+    async create(product: any) {
+      return adapter.create(product);
+    },
     async delete(id: string, confirm: true) {
       if (confirm !== true) {
         throw new Error("Deletion requires confirm: true");
