@@ -3,10 +3,9 @@
   "version": "0.1.0",
   "description": "An xmcp application with tool syntax",
   "scripts": {
-    "build": "xmcp build && bun run postbuild",
-    "postbuild": "node -e \"const fs=require('fs'); if(fs.existsSync('dist/http.js')) fs.renameSync('dist/http.js', 'dist/http.cjs')\"",
+    "build": "xmcp build",
     "dev": "xmcp dev",
-    "start": "node dist/http.cjs",
+    "start": "node dist/http.js",
     "check": "ultracite check",
     "fix": "ultracite fix",
     "test": "bun test",
