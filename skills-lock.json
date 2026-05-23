@@ -8,9 +8,9 @@
       "computedHash": "b4552b064777e524b7dbd5cf81bdc5c3839283d91fc30d294977380cff56b339"
     },
     "bun": {
-      "source": "midudev/autoskills",
-      "sourceType": "autoskills-registry",
-      "computedHash": "1386ed5490ed278e38312a416c9aa074dbe3849f32ae7f841e4142fef5d4df94"
+      "source": "bun.sh",
+      "sourceType": "well-known",
+      "computedHash": "110f793dac734495035068667a682f84f9abf554824002d95c870ea5d9a555d3"
     },
     "changelog-automation": {
       "source": "wshobson/agents",
