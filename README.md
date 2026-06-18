@@ -43,7 +43,7 @@ Each user configures **their own token and store ID** in the MCP client. Credent
 {
   "mcpServers": {
     "tiendanube": {
-      "url": "https://your-mcp.vercel.app/mcp",
+      "url": "https://mcp-tiendanube.vercel.app/mcp",
       "headers": {
         "X-Tiendanube-Access-Token": "${env:TIENDANUBE_ACCESS_TOKEN}",
         "X-Tiendanube-Store-Id": "${env:TIENDANUBE_STORE_ID}"
@@ -62,7 +62,7 @@ Each user configures **their own token and store ID** in the MCP client. Credent
       "command": "npx",
       "args": [
         "mcp-remote",
-        "https://your-mcp.vercel.app/mcp",
+        "https://mcp-tiendanube.vercel.app/mcp",
         "--header",
         "X-Tiendanube-Access-Token:${TN_TOKEN}",
         "--header",
@@ -78,6 +78,10 @@ Each user configures **their own token and store ID** in the MCP client. Credent
 ```
 
 > Credentials belong in the **MCP client config**, not in tool parameters. This keeps tokens out of LLM context.
+
+The server reads them via [`xmcp/headers`](https://xmcp.dev/docs/core-concepts/middlewares#accessing-headers) on each request (xmcp's recommended pattern). No custom middleware or Express dependency is required.
+
+**Optional MCP endpoint protection** (who can call your Vercel URL): use xmcp's [`apiKeyAuthMiddleware`](https://xmcp.dev/docs/authentication/api-key) with an `x-api-key` header. That is separate from Tiendanube store credentials.
 
 ### 2. Environment variables (local development only)
 

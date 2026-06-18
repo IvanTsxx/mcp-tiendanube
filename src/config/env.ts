@@ -3,7 +3,11 @@ import { resolve } from "node:path";
 import dotenv from "dotenv";
 import { headers } from "xmcp/headers";
 
-import { credentialsFromEnv, credentialsFromHeaders } from "./credentials";
+import {
+  CredentialsError,
+  credentialsFromEnv,
+  credentialsFromHeaders,
+} from "./credentials";
 import type { IncomingHeaders, TokenConfig } from "./credentials";
 
 export {
@@ -48,8 +52,8 @@ export function loadConfig(): TokenConfig {
 
   const fromEnv = credentialsFromEnv();
   if (!fromEnv) {
-    throw new Error(
-      "Missing Tiendanube credentials. Provide X-Tiendanube-Access-Token and X-Tiendanube-Store-Id headers, or set TIENDANUBE_ACCESS_TOKEN and TIENDANUBE_STORE_ID for local development."
+    throw new CredentialsError(
+      "Missing Tiendanube credentials. Provide X-Tiendanube-Access-Token and X-Tiendanube-Store-Id headers in your MCP client, or set TIENDANUBE_ACCESS_TOKEN and TIENDANUBE_STORE_ID for local development."
     );
   }
 

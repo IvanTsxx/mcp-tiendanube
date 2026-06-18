@@ -43,7 +43,7 @@ Cada usuario configura **su propio token y store ID** en el cliente MCP. Las cre
 {
   "mcpServers": {
     "tiendanube": {
-      "url": "https://tu-mcp.vercel.app/mcp",
+      "url": "https://mcp-tiendanube.vercel.app/mcp",
       "headers": {
         "X-Tiendanube-Access-Token": "${env:TIENDANUBE_ACCESS_TOKEN}",
         "X-Tiendanube-Store-Id": "${env:TIENDANUBE_STORE_ID}"
@@ -62,7 +62,7 @@ Cada usuario configura **su propio token y store ID** en el cliente MCP. Las cre
       "command": "npx",
       "args": [
         "mcp-remote",
-        "https://tu-mcp.vercel.app/mcp",
+        "https://mcp-tiendanube.vercel.app/mcp",
         "--header",
         "X-Tiendanube-Access-Token:${TN_TOKEN}",
         "--header",
@@ -78,6 +78,10 @@ Cada usuario configura **su propio token y store ID** en el cliente MCP. Las cre
 ```
 
 > Las credenciales van en la **config del cliente MCP**, no en parámetros de las herramientas. Así el LLM nunca ve ni expone tu token.
+
+El servidor las lee con [`xmcp/headers`](https://xmcp.dev/docs/core-concepts/middlewares#accessing-headers) en cada request (patrón recomendado por xmcp). No hace falta middleware custom ni Express.
+
+**Protección opcional del endpoint MCP** (quién puede llamar a tu URL en Vercel): podés usar [`apiKeyAuthMiddleware`](https://xmcp.dev/docs/authentication/api-key) de xmcp con un header `x-api-key`. Eso es independiente de las credenciales de Tiendanube.
 
 ### 2. Variables de entorno (solo desarrollo local)
 
@@ -101,6 +105,46 @@ Para conectar este servidor a cualquier cliente de IA (como Cursor, Claude Deskt
   "type": "local"
 }
 ```
+
+---
+
+## 🚀 Deploy en Vercel
+
+El servidor se despliega con [xmcp](https://xmcp.dev) y **no requiere** variables `TIENDANUBE_*` en Vercel.
+
+### Build
+
+```bash
+bun install
+bun run build   # ejecuta xmcp build --vercel → genera .vercel/output/
+```
+
+### Deploy
+
+```bash
+# Opción A: prebuilt local
+vercel deploy --prebuilt --prod
+
+# Opción B: push a Git con el proyecto enlazado en Vercel
+# (Build Command: bun run build, sin env vars de Tiendanube)
+```
+
+URL de producción: **https://mcp-tiendanube.vercel.app/mcp**
+
+### Verificación
+
+```bash
+curl -X POST "https://mcp-tiendanube.vercel.app/mcp" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json, text/event-stream" \
+  -H "X-Tiendanube-Access-Token: <TU_TOKEN>" \
+  -H "X-Tiendanube-Store-Id: <TU_STORE_ID>" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0"}}}'
+```
+
+Esperado: HTTP `200` y SSE con `"serverInfo":{"name":"TiendaNube MCP",...}`.
+
+> `${env:VAR}` en Cursor lee variables del **shell del sistema**, no del `.env` del proyecto. Para cargar desde `.env`, usá `envFile` en stdio o el workaround con `mcp-remote` documentado arriba.
 
 ---
 
