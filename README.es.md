@@ -27,18 +27,73 @@ Este servidor expone **8 herramientas** para gestionar el inventario de la tiend
 
 ## ⚙️ Configuración y Variables
 
-### 1. Variables de Entorno
+### 1. Credenciales por usuario (recomendado para deploy remoto)
 
-Crea un archivo `.env` en la raíz del proyecto:
+Cada usuario configura **su propio token y store ID** en el cliente MCP. Las credenciales viajan por **headers HTTP** y nunca se guardan en el servidor (Vercel no necesita `TIENDANUBE_ACCESS_TOKEN` ni `TIENDANUBE_STORE_ID`).
 
-| Variable                  | Descripción                      | Requerido | Ejemplo           |
-| :------------------------ | :------------------------------- | :-------: | :---------------- |
-| `TIENDANUBE_STORE_ID`     | ID único de tu tienda Tiendanube |    Sí     | `1234567`         |
-| `TIENDANUBE_ACCESS_TOKEN` | Token de acceso a la API         |    Sí     | `shpat_abc123...` |
+| Header                      | Requerido | Descripción                              |
+| :-------------------------- | :-------: | :--------------------------------------- |
+| `X-Tiendanube-Access-Token` |    Sí     | Token de acceso a la API de tu tienda    |
+| `X-Tiendanube-Store-Id`     |    Sí     | ID de tu tienda Tiendanube               |
+| `X-Tiendanube-Api-Base-Url` |    No     | Default: `https://api.tiendanube.com/v1` |
 
-### 2. Integración con Clientes de IA
+**Cursor / cliente MCP remoto:**
 
-Para conectar este servidor a cualquier cliente de IA (como Cursor, Claude Desktop o OpenCode) mediante conexión HTTP remota, agrega la siguiente configuración:
+```json
+{
+  "mcpServers": {
+    "tiendanube": {
+      "url": "https://tu-mcp.vercel.app/mcp",
+      "headers": {
+        "X-Tiendanube-Access-Token": "${env:TIENDANUBE_ACCESS_TOKEN}",
+        "X-Tiendanube-Store-Id": "${env:TIENDANUBE_STORE_ID}"
+      }
+    }
+  }
+}
+```
+
+**Con `mcp-remote` (workaround para espacios en headers):**
+
+```json
+{
+  "mcpServers": {
+    "tiendanube": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://tu-mcp.vercel.app/mcp",
+        "--header",
+        "X-Tiendanube-Access-Token:${TN_TOKEN}",
+        "--header",
+        "X-Tiendanube-Store-Id:${TN_STORE_ID}"
+      ],
+      "env": {
+        "TN_TOKEN": "tu_access_token",
+        "TN_STORE_ID": "1234567"
+      }
+    }
+  }
+}
+```
+
+> Las credenciales van en la **config del cliente MCP**, no en parámetros de las herramientas. Así el LLM nunca ve ni expone tu token.
+
+### 2. Variables de entorno (solo desarrollo local)
+
+Para `bun run dev` o transporte stdio, podés usar un `.env` local:
+
+| Variable                  | Descripción     | Requerido | Ejemplo                         |
+| :------------------------ | :-------------- | :-------: | :------------------------------ |
+| `TIENDANUBE_STORE_ID`     | ID de tu tienda |   Sí\*    | `1234567`                       |
+| `TIENDANUBE_ACCESS_TOKEN` | Token de acceso |   Sí\*    | `abc123...`                     |
+| `TIENDANUBE_API_BASE_URL` | URL base API    |    No     | `https://api.tiendanube.com/v1` |
+
+\* Solo si no usás headers (modo local).
+
+### 3. Integración con Clientes de IA
+
+Para conectar este servidor a cualquier cliente de IA (como Cursor, Claude Desktop o OpenCode) mediante conexión HTTP remota, usá la configuración con headers de la sección anterior. Ejemplo mínimo local:
 
 ```json
 "mcp-tiendanube": {

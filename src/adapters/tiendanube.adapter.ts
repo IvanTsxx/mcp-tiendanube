@@ -77,9 +77,6 @@ export function createAdapter(
     const url = `${config.TIENDANUBE_API_BASE_URL}/${config.TIENDANUBE_STORE_ID}${path}`;
 
     console.log(`[tn-api] ${method} ${url}`);
-    console.log(
-      `[tn-api] Authentication header length: ${headers.Authentication.length}`
-    );
 
     const requestOptions: RequestInit = {
       headers,

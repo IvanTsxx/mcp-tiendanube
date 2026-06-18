@@ -27,18 +27,73 @@ This server exposes **8 tools** to manage the store's inventory:
 
 ## ⚙️ Configuration & Variables
 
-### 1. Environment Variables
+### 1. Per-user credentials (recommended for remote deploy)
 
-Create a `.env` file in the root of the project:
+Each user configures **their own token and store ID** in the MCP client. Credentials travel via **HTTP headers** and are never stored on the server (Vercel does not need `TIENDANUBE_ACCESS_TOKEN` or `TIENDANUBE_STORE_ID`).
 
-| Variable                  | Description                     | Required | Example           |
-| :------------------------ | :------------------------------ | :------: | :---------------- |
-| `TIENDANUBE_STORE_ID`     | Your unique Tiendanube Store ID |   Yes    | `1234567`         |
-| `TIENDANUBE_ACCESS_TOKEN` | API Access Token                |   Yes    | `shpat_abc123...` |
+| Header                      | Required | Description                              |
+| :-------------------------- | :------: | :--------------------------------------- |
+| `X-Tiendanube-Access-Token` |   Yes    | Your Tiendanube API access token         |
+| `X-Tiendanube-Store-Id`     |   Yes    | Your Tiendanube store ID                 |
+| `X-Tiendanube-Api-Base-Url` |    No    | Default: `https://api.tiendanube.com/v1` |
 
-### 2. Integration with AI Tools
+**Cursor / remote MCP client:**
 
-To connect this server to any AI client (like Cursor, Claude Desktop, or OpenCode) via a remote HTTP connection, add the following configuration:
+```json
+{
+  "mcpServers": {
+    "tiendanube": {
+      "url": "https://your-mcp.vercel.app/mcp",
+      "headers": {
+        "X-Tiendanube-Access-Token": "${env:TIENDANUBE_ACCESS_TOKEN}",
+        "X-Tiendanube-Store-Id": "${env:TIENDANUBE_STORE_ID}"
+      }
+    }
+  }
+}
+```
+
+**With `mcp-remote` (workaround for spaces in headers):**
+
+```json
+{
+  "mcpServers": {
+    "tiendanube": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://your-mcp.vercel.app/mcp",
+        "--header",
+        "X-Tiendanube-Access-Token:${TN_TOKEN}",
+        "--header",
+        "X-Tiendanube-Store-Id:${TN_STORE_ID}"
+      ],
+      "env": {
+        "TN_TOKEN": "your_access_token",
+        "TN_STORE_ID": "1234567"
+      }
+    }
+  }
+}
+```
+
+> Credentials belong in the **MCP client config**, not in tool parameters. This keeps tokens out of LLM context.
+
+### 2. Environment variables (local development only)
+
+For `bun run dev` or stdio transport, you can use a local `.env`:
+
+| Variable                  | Description      | Required | Example                         |
+| :------------------------ | :--------------- | :------: | :------------------------------ |
+| `TIENDANUBE_STORE_ID`     | Your store ID    |  Yes\*   | `1234567`                       |
+| `TIENDANUBE_ACCESS_TOKEN` | API access token |  Yes\*   | `abc123...`                     |
+| `TIENDANUBE_API_BASE_URL` | API base URL     |    No    | `https://api.tiendanube.com/v1` |
+
+\* Only when not using headers (local mode).
+
+### 3. Integration with AI Tools
+
+To connect this server to any AI client (like Cursor, Claude Desktop, or OpenCode) via a remote HTTP connection, use the header configuration from the section above. Minimal local example:
 
 ```json
 "mcp-tiendanube": {
