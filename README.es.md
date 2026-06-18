@@ -116,7 +116,7 @@ El servidor se despliega con [xmcp](https://xmcp.dev) y **no requiere** variable
 
 ```bash
 bun install
-bun run build   # ejecuta xmcp build --vercel → genera .vercel/output/
+bun run build   # prebuild genera src/home.html desde el template de xmcp + credenciales Tiendanube
 ```
 
 ### Deploy

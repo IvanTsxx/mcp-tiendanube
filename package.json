@@ -3,6 +3,7 @@
   "version": "0.1.1",
   "description": "An xmcp application with tool syntax",
   "scripts": {
+    "prebuild": "node scripts/generate-home.mjs",
     "build": "xmcp build --vercel",
     "dev": "rm -rf dist && rm -rf .xmcp && xmcp dev",
     "start": "node dist/[transport].js",
