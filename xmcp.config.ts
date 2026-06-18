@@ -10,7 +10,14 @@ const config: XmcpConfig = {
   template: {
     icons: [{ src: "./xmcp.svg" }],
     name: "TiendaNube MCP",
-    description: "MCP for TiendaNube API",
+    description:
+      "MCP para gestionar productos, stock, variantes e imágenes en Tiendanube / Nuvemshop.",
+    homePage: "src/home.html",
+    instructions:
+      "Este servidor requiere credenciales de Tiendanube por headers HTTP del cliente: X-Tiendanube-Access-Token y X-Tiendanube-Store-Id (opcional X-Tiendanube-Api-Base-Url). " +
+      "No pedir al usuario el token en parámetros de herramientas. " +
+      "Usar list-products con paginación antes de operaciones masivas. " +
+      "delete-product requiere confirm: true.",
   },
 };
 

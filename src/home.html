@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TiendaNube MCP</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0a0a0a;
+        --card: #141414;
+        --border: #262626;
+        --text: #fafafa;
+        --muted: #a3a3a3;
+        --accent: #22c55e;
+        --code-bg: #0f0f0f;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        line-height: 1.6;
+      }
+
+      main {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 4rem;
+      }
+
+      h1 {
+        margin: 0 0 0.5rem;
+        font-size: 2rem;
+        font-weight: 600;
+      }
+
+      .subtitle {
+        margin: 0 0 2rem;
+        color: var(--muted);
+      }
+
+      section {
+        margin-bottom: 2rem;
+        padding: 1.25rem 1.5rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+      }
+
+      h2 {
+        margin: 0 0 0.75rem;
+        font-size: 1.1rem;
+      }
+
+      p {
+        margin: 0 0 1rem;
+        color: var(--muted);
+      }
+
+      p:last-child {
+        margin-bottom: 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+      }
+
+      th,
+      td {
+        padding: 0.6rem 0.5rem;
+        border-bottom: 1px solid var(--border);
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      code {
+        font-family:
+          ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.9em;
+        background: #1a1a1a;
+        padding: 0.1rem 0.35rem;
+        border-radius: 4px;
+      }
+
+      .endpoint {
+        display: inline-block;
+        margin-bottom: 1rem;
+        padding: 0.5rem 0.75rem;
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-family: ui-monospace, monospace;
+        font-size: 0.95rem;
+        color: var(--accent);
+      }
+
+      .code-block {
+        position: relative;
+        margin: 0;
+      }
+
+      pre {
+        margin: 0;
+        padding: 1rem;
+        overflow-x: auto;
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 0.85rem;
+        line-height: 1.5;
+      }
+
+      button.copy {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        border: 1px solid var(--border);
+        background: #1a1a1a;
+        color: var(--muted);
+        border-radius: 6px;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        cursor: pointer;
+      }
+
+      button.copy:hover {
+        color: var(--text);
+      }
+
+      .note {
+        padding: 0.75rem 1rem;
+        border-left: 3px solid var(--accent);
+        background: #101810;
+        border-radius: 0 8px 8px 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      a {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>TiendaNube MCP</h1>
+      <p class="subtitle">
+        Servidor MCP para gestionar productos, stock, variantes e imágenes de tu
+        tienda Tiendanube / Nuvemshop.
+      </p>
+
+      <section>
+        <h2>Endpoint</h2>
+        <div class="endpoint" id="mcp-endpoint">/mcp</div>
+        <p>
+          Cada usuario envía <strong>sus propias credenciales</strong> por
+          headers HTTP. El servidor en Vercel <strong>no guarda</strong> tokens
+          ni store IDs.
+        </p>
+      </section>
+
+      <section>
+        <h2>Headers requeridos</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Header</th>
+              <th>Requerido</th>
+              <th>Descripción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>X-Tiendanube-Access-Token</code></td>
+              <td>Sí</td>
+              <td>Access token de la API de tu tienda</td>
+            </tr>
+            <tr>
+              <td><code>X-Tiendanube-Store-Id</code></td>
+              <td>Sí</td>
+              <td>ID de tu tienda (user_id del token OAuth)</td>
+            </tr>
+            <tr>
+              <td><code>X-Tiendanube-Api-Base-Url</code></td>
+              <td>No</td>
+              <td>
+                Default:
+                <code>https://api.tiendanube.com/v1</code> (sin store id en la
+                URL)
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Cursor (URL remota directa)</h2>
+        <p>
+          Agregá esto en <code>.cursor/mcp.json</code>. Las variables
+          <code>${env:...}</code> se leen del shell del sistema, no del
+          <code>.env</code> del proyecto.
+        </p>
+        <div class="code-block">
+          <button class="copy" type="button" data-copy="cursor-config">
+            Copiar
+          </button>
+          <pre id="cursor-config">
+{
+  "mcpServers": {
+    "tiendanube": {
+      "url": "https://mcp-tiendanube.vercel.app/mcp",
+      "headers": {
+        "X-Tiendanube-Access-Token": "${env:TIENDANUBE_ACCESS_TOKEN}",
+        "X-Tiendanube-Store-Id": "${env:TIENDANUBE_STORE_ID}"
+      }
+    }
+  }
+}</pre
+          >
+        </div>
+      </section>
+
+      <section>
+        <h2>Herramientas disponibles</h2>
+        <p>
+          <code>list-products</code>, <code>get-product</code>,
+          <code>create-product</code>, <code>update-products</code>,
+          <code>delete-product</code>, <code>update-stock</code>,
+          <code>manage-variants</code>, <code>manage-images</code>
+        </p>
+        <p class="note">
+          Las credenciales van en la configuración del cliente MCP, nunca en
+          parámetros de las herramientas, para que el modelo no vea tu token.
+        </p>
+      </section>
+
+      <section>
+        <h2>Documentación</h2>
+        <p>
+          <a href="https://github.com/IvanTsxx/mcp-tiendanube" rel="noopener"
+            >Repositorio en GitHub</a
+          >
+          ·
+          <a
+            href="https://xmcp.dev/docs/core-concepts/middlewares#accessing-headers"
+            rel="noopener"
+            >xmcp: headers</a
+          >
+        </p>
+      </section>
+    </main>
+    <script>
+      const endpoint = document.getElementById("mcp-endpoint");
+      const mcpUrl = `${window.location.origin}/mcp`;
+      endpoint.textContent = mcpUrl;
+
+      const cursorConfig = document.getElementById("cursor-config");
+      cursorConfig.textContent = cursorConfig.textContent.replace(
+        "https://mcp-tiendanube.vercel.app/mcp",
+        mcpUrl
+      );
+
+      for (const button of document.querySelectorAll("button.copy")) {
+        button.addEventListener("click", async () => {
+          const target = document.getElementById(button.dataset.copy);
+          if (!target) return;
+          await navigator.clipboard.writeText(target.textContent.trim());
+          const original = button.textContent;
+          button.textContent = "Copiado";
+          setTimeout(() => {
+            button.textContent = original;
+          }, 1500);
+        });
+      }
+    </script>
+  </body>
+</html>
